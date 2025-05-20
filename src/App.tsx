@@ -1,8 +1,7 @@
-import './App.css';
-import AuthForm from './components/layout/Auth/AuthForm';
+import AppRoutes from "./router";
 
 function App() {
-  return <AuthForm />
+  return <AppRoutes />;
 }
 
 export default App;
