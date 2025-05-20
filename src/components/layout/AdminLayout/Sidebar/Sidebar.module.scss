@@ -1,0 +1,23 @@
+.sidebarTitle {
+  padding: 16px;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menuContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: none !important;
+}
+
+.logoutButton {
+  margin-top: auto !important;
+
+
+  &:hover {
+    color: #ff4d4f !important;
+  }
+}
