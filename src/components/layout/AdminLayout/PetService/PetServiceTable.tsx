@@ -1,0 +1,123 @@
+import React, { useEffect, useState } from "react";
+import { Table, Button, Space, Popconfirm } from "antd";
+import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  deletePetService,
+  getAllPetServices
+} from "../../../../api/PetService/PetService";
+import PetServiceForm from "./PetServiceForm";
+import { PetServiceResponse } from "../../../../api/PetService/types/PetServiceResponse";
+
+const PetServiceTable: React.FC = () => {
+  const [services, setServices] = useState<PetServiceResponse[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedService, setSelectedService] = useState<PetServiceResponse | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 10;
+
+  const loadData = async (page: number = currentPage) => {
+    setLoading(true);
+    try {
+      const data = await getAllPetServices(page - 1, pageSize);
+      setServices(data.content);
+      setTotal(data.totalElements);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [currentPage]);
+
+  const handleDelete = async (id: string) => {
+    await deletePetService(id);
+    loadData();
+  };
+
+  return (
+    <>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        style={{ marginBottom: 16 }}
+        onClick={() => {
+          setSelectedService(null);
+          setShowModal(true);
+        }}
+      >
+        Adicionar Serviço
+      </Button>
+
+      <Table
+        rowKey="id"
+        dataSource={services}
+        loading={loading}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: total,
+          onChange: (page) => setCurrentPage(page)
+        }}
+        columns={[
+          {
+            title: "Nome",
+            dataIndex: "name"
+          },
+          {
+            title: "Preço",
+            dataIndex: "price",
+            render: (text: number) => `R$ ${text.toFixed(2)}`
+          },
+          {
+            title: "Duração",
+            dataIndex: "time",
+            render: (text: number) => `${text} min`
+          },
+          {
+            title: "Descrição",
+            dataIndex: "description"
+          },
+          {
+            title: "Ações",
+            render: (_: any, record: PetServiceResponse) => (
+              <Space>
+                <Button
+                  icon={<EyeOutlined />}
+                  onClick={() => {
+                    setSelectedService(record);
+                    setShowModal(true);
+                  }}
+                />
+                <Button
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setSelectedService(record);
+                    setShowModal(true);
+                  }}
+                />
+                <Popconfirm
+                  title="Deseja excluir?"
+                  onConfirm={() => handleDelete(record.id)}
+                >
+                  <Button icon={<DeleteOutlined />} danger />
+                </Popconfirm>
+              </Space>
+            )
+          }
+        ]}
+      />
+
+      <PetServiceForm
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        service={selectedService}
+        onRefresh={() => loadData(1)}
+      />
+    </>
+  );
+};
+
+export default PetServiceTable;
