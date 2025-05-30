@@ -11,16 +11,33 @@ const LoginForm: React.FC = () => {
   const handleLogin = async (values: any) => {
     setLoading(true);
     try {
-      const { token } = await loginUser(values);
+      const { token, role, name } = await loginUser(values);
 
       if (values.remember) {
         localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
+        localStorage.setItem("name", name);
       } else {
         sessionStorage.setItem("token", token);
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("name", name);
       }
 
       notifySuccess("Login realizado com sucesso!");
-      navigate("/dashboard/pet-service");
+
+      switch (role) {
+        case "ADMIN":
+        case "SUPER_ADMIN":
+        case "EMPLOYEE":
+          navigate("/dashboard/pet-service");
+          break;
+        case "USER":
+          navigate("/pet-service");
+          break;
+        default:
+          notifyError("Permissão desconhecida");
+          break;
+      }
     } catch (error: any) {
       notifyError(error.response?.data?.message || "Erro ao fazer login");
     } finally {
@@ -38,11 +55,7 @@ const LoginForm: React.FC = () => {
         <Input size="large" />
       </Form.Item>
 
-      <Form.Item
-        name="password"
-        label="Senha"
-        rules={[{ required: true }]}
-      >
+      <Form.Item name="password" label="Senha" rules={[{ required: true }]}>
         <Input.Password size="large" />
       </Form.Item>
 
