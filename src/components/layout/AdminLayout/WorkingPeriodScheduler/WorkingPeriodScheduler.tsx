@@ -5,7 +5,6 @@ import {
   TimePicker,
   Modal,
   message,
-  List,
   Row,
   Col,
   Typography,
@@ -21,24 +20,23 @@ import {
 } from "../../../../api/WorkingPeriod/WorkingPeriod";
 import { WorkingPeriodRequest } from "../../../../api/WorkingPeriod/types/WorkingPeriodRequest";
 
-import styles from "./WorkingPeriodScheduler.module.scss";
-import Title from "antd/es/typography/Title";
-
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 const dayMap: Record<string, string> = {
+  Domingo: "SUNDAY",
   Segunda: "MONDAY",
   Terça: "TUESDAY",
   Quarta: "WEDNESDAY",
   Quinta: "THURSDAY",
   Sexta: "FRIDAY",
+  Sábado: "SATURDAY",
 };
 
 const reverseDayMap = Object.fromEntries(
   Object.entries(dayMap).map(([pt, en]) => [en, pt])
 );
 
-const daysOfWeek = Object.keys(dayMap);
+const diasSemana = Object.keys(dayMap);
 
 const WorkingPeriodScheduler: React.FC = () => {
   const [workingPeriods, setWorkingPeriods] = useState<
@@ -118,55 +116,55 @@ const WorkingPeriodScheduler: React.FC = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <Title level={3} className={styles.title}>
+    <div style={{ padding: "2rem" }}>
+      <Title level={3} style={{ textAlign: "center", marginBottom: "2rem" }}>
         Períodos de Trabalho
       </Title>
-      <Row gutter={[16, 16]} wrap={true} justify={"center"}>
-        {daysOfWeek.map((day) => (
-          <Col xs={24} sm={12} md={8} lg={4} key={day}>
+      <Row gutter={[16, 16]} justify="center">
+        {diasSemana.map((dia) => (
+          <Col xs={24} sm={12} md={8} lg={6} xl={6} key={dia}>
             <Card
-              title={<Text strong>{day}</Text>}
-              loading={loading}
+              title={<strong>{dia}</strong>}
               extra={
                 <Button
                   type="primary"
                   shape="circle"
                   icon={<PlusOutlined />}
-                  size="small"
-                  onClick={() => openModal(day)}
-                  aria-label={`Adicionar período para ${day}`}
+                  onClick={() => openModal(dia)}
                 />
               }
-              className={styles.card}
+              style={{ minHeight: 200 }}
+              loading={loading}
             >
-              {(workingPeriods[day]?.length ?? 0) > 0 ? (
-                <List
-                  size="small"
-                  dataSource={workingPeriods[day]}
-                  renderItem={(period) => (
-                    <List.Item
-                      key={period.id}
-                      actions={[
-                        <Button
-                          type="text"
-                          danger
-                          icon={<DeleteOutlined />}
-                          onClick={() => handleDeletePeriod(period.id)}
-                          aria-label="Deletar período"
-                        />,
-                      ]}
-                    >
-                      <Text>
-                        {`${dayjs(period.startTime, "HH:mm:ss").format(
-                          "HH:mm"
-                        )} - ${dayjs(period.endTime, "HH:mm:ss").format(
-                          "HH:mm"
-                        )}`}
-                      </Text>
-                    </List.Item>
-                  )}
-                />
+              {workingPeriods[dia] && workingPeriods[dia].length > 0 ? (
+                workingPeriods[dia].map((period) => (
+                  <div
+                    key={period.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 8,
+                    }}
+                  >
+                    <Text>
+                      {dayjs(period.startTime, "HH:mm").isValid() &&
+                      dayjs(period.endTime, "HH:mm").isValid()
+                        ? `${dayjs(period.startTime, "HH:mm").format(
+                            "HH:mm"
+                          )} - ${dayjs(period.endTime, "HH:mm").format(
+                            "HH:mm"
+                          )}`
+                        : "Horário inválido"}
+                    </Text>
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDeletePeriod(period.id)}
+                    />
+                  </div>
+                ))
               ) : (
                 <Text type="secondary">Nenhum período cadastrado</Text>
               )}
@@ -176,38 +174,33 @@ const WorkingPeriodScheduler: React.FC = () => {
       </Row>
 
       <Modal
-        title={`Adicionar horário para ${selectedDay}`}
+        title={`Adicionar período - ${selectedDay}`}
         open={modalVisible}
         onOk={handleAddPeriod}
         onCancel={() => setModalVisible(false)}
         okText="Salvar"
         cancelText="Cancelar"
-        destroyOnClose
       >
-        <Row gutter={16} justify="center">
-          <Col span={10} className={styles.timepickerCol}>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          <div>
+            <Text>Início</Text>
             <TimePicker
-              placeholder="Início"
-              format="HH:mm"
               value={startTime}
               onChange={setStartTime}
-              minuteStep={15}
-              allowClear
-              style={{ width: "100%" }}
-            />
-          </Col>
-          <Col span={10} className={styles.timepickerCol}>
-            <TimePicker
-              placeholder="Fim"
               format="HH:mm"
+              minuteStep={5}
+            />
+          </div>
+          <div>
+            <Text>Fim</Text>
+            <TimePicker
               value={endTime}
               onChange={setEndTime}
-              minuteStep={15}
-              allowClear
-              style={{ width: "100%" }}
+              format="HH:mm"
+              minuteStep={5}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Modal>
     </div>
   );

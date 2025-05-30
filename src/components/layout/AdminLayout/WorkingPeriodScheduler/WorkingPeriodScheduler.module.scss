@@ -1,17 +1,26 @@
 .wrapper {
   min-height: 100vh;
+  padding: 24px;
 }
 
 .title {
   text-align: center;
+  margin-bottom: 32px;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
 }
 
 .card {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  min-height: 200px;
-  width: 320px;
-  margin: 0 auto;
+  min-width: 240px;
+  flex: 1 1 240px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -19,4 +28,5 @@
 
 .timepickerCol {
   width: 100%;
+  margin-bottom: 16px;
 }

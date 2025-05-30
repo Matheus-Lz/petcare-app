@@ -3,6 +3,7 @@ import {
   CalendarOutlined,
   ScissorOutlined,
   LogoutOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.scss";
@@ -21,10 +22,7 @@ const Sidebar = () => {
   return (
     <Sider theme="light" width={220}>
       <div className={styles.sidebarTitle}>PetCare</div>
-      <Menu
-        mode="inline"
-        className={styles.menuContainer}
-      >
+      <Menu mode="inline" className={styles.menuContainer}>
         <Menu.Item
           key="pet-service"
           icon={<ScissorOutlined />}
@@ -39,6 +37,14 @@ const Sidebar = () => {
           onClick={() => navigate("/dashboard/working-period")}
         >
           Períodos
+        </Menu.Item>
+
+        <Menu.Item
+          key="employee"
+          icon={<UserOutlined />}
+          onClick={() => navigate("/dashboard/employee")}
+        >
+          Funcionários
         </Menu.Item>
 
         <Menu.Item
