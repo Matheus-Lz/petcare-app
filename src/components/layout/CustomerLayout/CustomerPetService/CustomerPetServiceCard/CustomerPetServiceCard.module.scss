@@ -1,0 +1,27 @@
+.card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d9d9d9;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.title {
+  margin: 0;
+}
+
+.labelText {
+  color: #1890ff;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.buttonWrapper {
+  margin-top: 16px;
+  text-align: center;
+}
