@@ -13,6 +13,8 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const navigate = useNavigate();
 
+  const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+
   const handleLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
@@ -39,13 +41,15 @@ const Sidebar = () => {
           Períodos
         </Menu.Item>
 
-        <Menu.Item
-          key="employee"
-          icon={<UserOutlined />}
-          onClick={() => navigate("/dashboard/employee")}
-        >
-          Funcionários
-        </Menu.Item>
+        {role !== "EMPLOYEE" && (
+          <Menu.Item
+            key="employee"
+            icon={<UserOutlined />}
+            onClick={() => navigate("/dashboard/employee")}
+          >
+            Funcionários
+          </Menu.Item>
+        )}
 
         <Menu.Item
           key="logout"
