@@ -1,0 +1,16 @@
+.scheduleFormContainer {
+  max-width: 500px;
+  margin: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scheduleFormTitle {
+  margin-bottom: 0;
+}
+
+.scheduleFormText {
+  margin-bottom: 4px;
+}

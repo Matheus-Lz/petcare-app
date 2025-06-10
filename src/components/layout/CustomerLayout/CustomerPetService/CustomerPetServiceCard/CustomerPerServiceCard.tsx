@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, Typography, Button } from "antd";
+import React, { useState } from "react";
+import { Card, Typography, Button, Modal } from "antd";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
-
+import CustomerScheduleForm from "../CustomerScheduleForm/CustomerScheduleForm";
 import styles from "./CustomerPetServiceCard.module.scss";
 
 const { Title, Text, Paragraph } = Typography;
@@ -11,36 +11,54 @@ interface Props {
 }
 
 const CustomerPetServiceCard: React.FC<Props> = ({ service }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const handleSchedule = () => {
-    alert(`Agendando serviço: ${service.name}`);
+    setModalVisible(true);
+  };
+
+  const handleSuccess = () => {
+    setModalVisible(false);
   };
 
   return (
-    <Card hoverable className={styles.card}>
-      <Title level={4} className={styles.title}>
-        {service.name}
-      </Title>
+    <>
+      <Card hoverable className={styles.card}>
+        <Title level={4} className={styles.title}>
+          {service.name}
+        </Title>
 
-      <Text strong className={styles.labelText}>
-        Preço:
-      </Text>
-      <Text>R$ {service.price.toFixed(2)}</Text>
-      <br />
+        <Text strong className={styles.labelText}>
+          Preço:
+        </Text>
+        <Text>R$ {service.price.toFixed(2)}</Text>
+        <br />
 
-      <Text strong className={styles.labelText}>
-        Duração:
-      </Text>
-      <Text>{service.time} minutos</Text>
-      <br />
+        <Text strong className={styles.labelText}>
+          Duração:
+        </Text>
+        <Text>{service.time} minutos</Text>
+        <br />
 
-      <Paragraph ellipsis={{ rows: 3 }}>{service.description}</Paragraph>
+        <Paragraph ellipsis={{ rows: 3 }}>{service.description}</Paragraph>
 
-      <div className={styles.buttonWrapper}>
-        <Button type="primary" onClick={handleSchedule} block>
-          Agendar
-        </Button>
-      </div>
-    </Card>
+        <div className={styles.buttonWrapper}>
+          <Button type="primary" onClick={handleSchedule} block>
+            Agendar
+          </Button>
+        </div>
+      </Card>
+
+      <Modal
+        title={`Agendar Serviço`}
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        footer={null}
+        destroyOnClose
+      >
+        <CustomerScheduleForm service={service} onSuccess={handleSuccess} />
+      </Modal>
+    </>
   );
 };
 
