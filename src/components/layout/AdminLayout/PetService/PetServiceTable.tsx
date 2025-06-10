@@ -13,6 +13,7 @@ const PetServiceTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedService, setSelectedService] = useState<PetServiceResponse | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
@@ -45,6 +46,7 @@ const PetServiceTable: React.FC = () => {
         style={{ marginBottom: 16 }}
         onClick={() => {
           setSelectedService(null);
+          setIsReadOnly(false);
           setShowModal(true);
         }}
       >
@@ -59,26 +61,26 @@ const PetServiceTable: React.FC = () => {
           current: currentPage,
           pageSize: pageSize,
           total: total,
-          onChange: (page) => setCurrentPage(page)
+          onChange: (page) => setCurrentPage(page),
         }}
         columns={[
           {
             title: "Nome",
-            dataIndex: "name"
+            dataIndex: "name",
           },
           {
             title: "Preço",
             dataIndex: "price",
-            render: (text: number) => `R$ ${text.toFixed(2)}`
+            render: (text: number) => `R$ ${text.toFixed(2)}`,
           },
           {
             title: "Duração",
             dataIndex: "time",
-            render: (text: number) => `${text} min`
+            render: (text: number) => `${text} min`,
           },
           {
             title: "Descrição",
-            dataIndex: "description"
+            dataIndex: "description",
           },
           {
             title: "Ações",
@@ -88,6 +90,7 @@ const PetServiceTable: React.FC = () => {
                   icon={<EyeOutlined />}
                   onClick={() => {
                     setSelectedService(record);
+                    setIsReadOnly(true);
                     setShowModal(true);
                   }}
                 />
@@ -95,6 +98,7 @@ const PetServiceTable: React.FC = () => {
                   icon={<EditOutlined />}
                   onClick={() => {
                     setSelectedService(record);
+                    setIsReadOnly(false);
                     setShowModal(true);
                   }}
                 />
@@ -105,8 +109,8 @@ const PetServiceTable: React.FC = () => {
                   <Button icon={<DeleteOutlined />} danger />
                 </Popconfirm>
               </Space>
-            )
-          }
+            ),
+          },
         ]}
       />
 
@@ -115,6 +119,7 @@ const PetServiceTable: React.FC = () => {
         onClose={() => setShowModal(false)}
         service={selectedService}
         onRefresh={() => loadData(1)}
+        readOnly={isReadOnly}
       />
     </>
   );

@@ -9,9 +9,16 @@ interface PetServiceFormProps {
   onClose: () => void;
   service: PetServiceResponse | null;
   onRefresh: () => void;
+  readOnly?: boolean;
 }
 
-const PetServiceForm: React.FC<PetServiceFormProps> = ({ visible, onClose, service, onRefresh }) => {
+const PetServiceForm: React.FC<PetServiceFormProps> = ({
+  visible,
+  onClose,
+  service,
+  onRefresh,
+  readOnly = false,
+}) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -23,6 +30,7 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({ visible, onClose, servi
   }, [service, form]);
 
   const handleFinish = async (values: CreatePetServiceRequest) => {
+    if (readOnly) return;
     if (service) {
       await updatePetService(service.id, values);
     } else {
@@ -34,23 +42,30 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({ visible, onClose, servi
 
   return (
     <Modal
-      title={service ? "Editar Serviço" : "Novo Serviço"}
+      title={
+        readOnly
+          ? "Visualizar Serviço"
+          : service
+          ? "Editar Serviço"
+          : "Novo Serviço"
+      }
       open={visible}
       onCancel={onClose}
-      onOk={() => form.submit()}
+      onOk={() => !readOnly && form.submit()}
+      footer={readOnly ? null : undefined}
     >
       <Form layout="vertical" form={form} onFinish={handleFinish}>
         <Form.Item name="name" label="Nome" rules={[{ required: true }]}>
-          <Input />
+          <Input disabled={readOnly} />
         </Form.Item>
         <Form.Item name="price" label="Preço" rules={[{ required: true }]}>
-          <InputNumber style={{ width: "100%" }} prefix="R$" />
+          <InputNumber style={{ width: "100%" }} prefix="R$" disabled={readOnly} />
         </Form.Item>
         <Form.Item name="time" label="Duração (minutos)" rules={[{ required: true }]}>
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber style={{ width: "100%" }} disabled={readOnly} />
         </Form.Item>
         <Form.Item name="description" label="Descrição" rules={[{ required: true }]}>
-          <Input.TextArea rows={3} />
+          <Input.TextArea rows={3} disabled={readOnly} />
         </Form.Item>
       </Form>
     </Modal>
