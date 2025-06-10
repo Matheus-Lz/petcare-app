@@ -12,9 +12,16 @@ interface EmployeeFormProps {
   onClose: () => void;
   employee: EmployeeResponse | null;
   onRefresh: () => void;
+  readOnly?: boolean;
 }
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee, onRefresh }) => {
+const EmployeeForm: React.FC<EmployeeFormProps> = ({
+  visible,
+  onClose,
+  employee,
+  onRefresh,
+  readOnly = false,
+}) => {
   const [form] = Form.useForm();
   const [servicesOptions, setServicesOptions] = useState<{ id: string; name: string }[]>([]);
   const [loadingServices, setLoadingServices] = useState(false);
@@ -24,7 +31,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee,
       setLoadingServices(true);
       try {
         const data = await getAllPetServices(0, 100);
-        setServicesOptions(data.content.map(s => ({ id: s.id, name: s.name })));
+        setServicesOptions(data.content.map((s) => ({ id: s.id, name: s.name })));
       } finally {
         setLoadingServices(false);
       }
@@ -39,7 +46,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee,
         name: employee.user?.name,
         cpfCnpj: employee.user?.cpfCnpj,
         password: "",
-        serviceIds: employee.petServiceList.map,
+        serviceIds: employee.petServiceList.map((s) => s.id),
       });
     } else {
       form.resetFields();
@@ -62,16 +69,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee,
     } else {
       await createEmployee(payload);
     }
+
     onClose();
     onRefresh();
   };
 
   return (
     <Modal
-      title={employee ? "Editar Funcionário" : "Novo Funcionário"}
+      title={
+        readOnly
+          ? "Visualizar Funcionário"
+          : employee
+          ? "Editar Funcionário"
+          : "Novo Funcionário"
+      }
       open={visible}
       onCancel={onClose}
-      onOk={() => form.submit()}
+      onOk={() => !readOnly && form.submit()}
+      footer={
+        readOnly
+          ? null
+          : undefined
+      }
     >
       <Form form={form} layout="vertical" onFinish={handleFinish}>
         {!employee && (
@@ -81,28 +100,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee,
               name="email"
               rules={[{ required: true, message: "Email é obrigatório" }, { type: "email", message: "Email inválido" }]}
             >
-              <Input />
+              <Input disabled={readOnly} />
             </Form.Item>
             <Form.Item
               label="Senha"
               name="password"
               rules={[{ required: true, message: "Senha é obrigatória" }, { min: 6, message: "Mínimo 6 caracteres" }]}
             >
-              <Input.Password />
+              <Input.Password disabled={readOnly} />
             </Form.Item>
             <Form.Item
               label="CPF/CNPJ"
               name="cpfCnpj"
               rules={[{ required: true, message: "CPF/CNPJ é obrigatório" }, { max: 14, message: "Máximo 14 caracteres" }]}
             >
-              <Input />
+              <Input disabled={readOnly} />
             </Form.Item>
             <Form.Item
               label="Nome"
               name="name"
               rules={[{ required: true, message: "Nome é obrigatório" }]}
             >
-              <Input />
+              <Input disabled={readOnly} />
             </Form.Item>
           </>
         )}
@@ -129,7 +148,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ visible, onClose, employee,
           {loadingServices ? (
             <Spin />
           ) : (
-            <Select mode="multiple" placeholder="Selecione serviços">
+            <Select mode="multiple" placeholder="Selecione serviços" disabled={readOnly}>
               {servicesOptions.map((service) => (
                 <Option key={service.id} value={service.id}>
                   {service.name}

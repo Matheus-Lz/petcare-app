@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, Tag, Select } from "antd";
+import { Table, Button, Space, Popconfirm, Tag } from "antd";
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   deleteEmployee,
@@ -13,6 +13,7 @@ const EmployeeTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponse | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
@@ -45,6 +46,7 @@ const EmployeeTable: React.FC = () => {
         style={{ marginBottom: 16 }}
         onClick={() => {
           setSelectedEmployee(null);
+          setIsReadOnly(false);
           setShowModal(true);
         }}
       >
@@ -90,6 +92,7 @@ const EmployeeTable: React.FC = () => {
                   icon={<EyeOutlined />}
                   onClick={() => {
                     setSelectedEmployee(record);
+                    setIsReadOnly(true);
                     setShowModal(true);
                   }}
                 />
@@ -97,6 +100,7 @@ const EmployeeTable: React.FC = () => {
                   icon={<EditOutlined />}
                   onClick={() => {
                     setSelectedEmployee(record);
+                    setIsReadOnly(false);
                     setShowModal(true);
                   }}
                 />
@@ -117,6 +121,7 @@ const EmployeeTable: React.FC = () => {
         onClose={() => setShowModal(false)}
         employee={selectedEmployee}
         onRefresh={() => loadData(1)}
+        readOnly={isReadOnly}
       />
     </>
   );
