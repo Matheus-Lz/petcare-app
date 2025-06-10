@@ -183,7 +183,7 @@ const WorkingPeriodScheduler: React.FC = () => {
       >
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
           <div>
-            <Text>Início</Text>
+            <Text>Início: </Text>
             <TimePicker
               value={startTime}
               onChange={setStartTime}
@@ -192,7 +192,7 @@ const WorkingPeriodScheduler: React.FC = () => {
             />
           </div>
           <div>
-            <Text>Fim</Text>
+            <Text>Fim: </Text>
             <TimePicker
               value={endTime}
               onChange={setEndTime}
