@@ -16,3 +16,13 @@ export const getAvailableTimes = async (
     });
     return response.data;
 };
+
+export const getAvailableDays = async (
+  petServiceId: string,
+  monthStart: string
+): Promise<string[]> => {
+  const response = await api.get("/schedullings/available-days", {
+    params: { petServiceId, monthStart }
+  });
+  return response.data;
+};
