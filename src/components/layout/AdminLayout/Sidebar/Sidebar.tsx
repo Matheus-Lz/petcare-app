@@ -33,15 +33,17 @@ const Sidebar = () => {
           Serviços
         </Menu.Item>
 
-        <Menu.Item
-          key="working-period"
-          icon={<CalendarOutlined />}
-          onClick={() => navigate("/dashboard/working-period")}
-        >
-          Períodos
-        </Menu.Item>
+        {role === "SUPER_ADMIN" && (
+          <Menu.Item
+            key="working-period"
+            icon={<CalendarOutlined />}
+            onClick={() => navigate("/dashboard/working-period")}
+          >
+            Períodos
+          </Menu.Item>
+        )}
 
-        {role !== "EMPLOYEE" && (
+        {role === "SUPER_ADMIN" && (
           <Menu.Item
             key="employee"
             icon={<UserOutlined />}
