@@ -4,6 +4,7 @@ import PetServicesPage from "../pages/PetServicePage";
 import WorkingPeriodPage from "../pages/WorkingPeriodPage";
 import EmployeePage from "../pages/EmployeePage";
 import CustomerPetServicePage from "../pages/CustomerPetServicePage";
+import CustomerSchedullingHistoricPage from "../pages/CustomerSchedullingHistoricPage";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route path="/dashboard/employee" element={<EmployeePage />} />
 
         <Route path="/pet-service" element={<CustomerPetServicePage />} />
+        <Route path="/schedullings" element={<CustomerSchedullingHistoricPage />} />
       </Routes>
     </Router>
   );

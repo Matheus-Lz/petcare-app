@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Typography, Spin, Pagination } from "antd";
+import { Row, Col, Spin, Pagination } from "antd";
 
 import styles from "./CustomerPetServiceList.module.scss";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
 import { getAllPetServices } from "../../../../../api/PetService/PetService";
 import CustomerPetServiceCard from "../CustomerPetServiceCard/CustomerPerServiceCard";
-
-const { Content } = Layout;
-const { Title } = Typography;
 
 const CustomerPetServiceList: React.FC = () => {
   const [services, setServices] = useState<PetServiceResponse[]>([]);
@@ -38,7 +35,7 @@ const CustomerPetServiceList: React.FC = () => {
         <Spin size="large" className={styles.spinContainer} />
       ) : (
         <>
-          <Row gutter={[32, 32]} justify="center">
+          <Row gutter={[32, 32]} className={styles.container}>
             {services.map((service) => (
               <Col
                 key={service.id}

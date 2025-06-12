@@ -1,0 +1,102 @@
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+
+.cardHorizontal {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+  }
+}
+
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #2f54eb;
+}
+
+.status {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.WAITING_FOR_ARRIVAL {
+  color: #faad14;
+}
+
+.PENDING {
+  color: #fa8c16;
+}
+
+.IN_PROGRESS {
+  color: #1890ff;
+}
+
+.WAITING_FOR_PICKUP {
+  color: #13c2c2;
+}
+
+.COMPLETED {
+  color: #52c41a;
+}
+
+.NO_SHOW {
+  color: #f5222d;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  padding: 16px;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-grow: 1;
+}
+
+.cardInfo > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cardInfo strong {
+  color: #2f54eb;
+  min-width: 100px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.cardInfo span,
+.cardInfo Text {
+  color: #595959;
+  font-size: 14px;
+}
+
+.paginationContainer {
+  margin-top: 25px;
+  text-align: center;
+}

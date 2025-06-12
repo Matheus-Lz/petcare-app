@@ -26,3 +26,8 @@ export const getAvailableDays = async (
   });
   return response.data;
 };
+
+export const getUserSchedullings = async (page: number, size: number = 10) => {
+  const response = await api.get(`/schedullings/user?page=${page}&size=${size}`);
+  return response.data;
+};

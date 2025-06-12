@@ -4,6 +4,7 @@ import {
   AppstoreOutlined,
   LogoutOutlined,
   UserOutlined,
+  ScheduleOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -31,6 +32,11 @@ const CustomerHeader: React.FC<Props> = ({ username }) => {
         <AppstoreOutlined className={styles.iconBlue} />
         <Link to="/pet-service" className={styles.linkText}>
           <Text strong>Pet Services</Text>
+        </Link>
+
+        <Link to="/schedullings" className={styles.linkText} style={{ marginLeft: 20, display: "flex", alignItems: "center", gap: 6 }}>
+          <ScheduleOutlined />
+          <Text strong>Agendamentos</Text>
         </Link>
       </div>
 

@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, InputNumber } from "antd";
-import { createPetService, updatePetService } from "../../../../api/PetService/PetService";
+import {
+  createPetService,
+  updatePetService,
+} from "../../../../api/PetService/PetService";
 import { PetServiceResponse } from "../../../../api/PetService/types/PetServiceResponse";
 import { CreatePetServiceRequest } from "../../../../api/PetService/types/CreatePetServiceRequest";
 
@@ -55,17 +58,69 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({
       footer={readOnly ? null : undefined}
     >
       <Form layout="vertical" form={form} onFinish={handleFinish}>
-        <Form.Item name="name" label="Nome" rules={[{ required: true }]}>
-          <Input disabled={readOnly} />
+        <Form.Item
+          name="name"
+          label="Nome"
+          rules={[
+            { required: true, message: "O nome é obrigatório." },
+            { max: 20, message: "Máximo de 20 caracteres." },
+          ]}
+        >
+          <Input disabled={readOnly} maxLength={20} />
         </Form.Item>
-        <Form.Item name="price" label="Preço" rules={[{ required: true }]}>
-          <InputNumber style={{ width: "100%" }} prefix="R$" disabled={readOnly} />
+
+        <Form.Item
+          name="price"
+          label="Preço"
+          rules={[
+            { required: true, message: "O preço é obrigatório." },
+            {
+              type: "number",
+              max: 9999999999.99,
+              message: "Valor máximo excedido.",
+            },
+          ]}
+        >
+          <InputNumber
+            style={{ width: "100%" }}
+            prefix="R$"
+            disabled={readOnly}
+            min={0}
+            max={9999999999.99}
+            step={0.01}
+            precision={2}
+          />
         </Form.Item>
-        <Form.Item name="time" label="Duração (minutos)" rules={[{ required: true }]}>
-          <InputNumber style={{ width: "100%" }} disabled={readOnly} />
+
+        <Form.Item
+          name="time"
+          label="Duração (minutos)"
+          rules={[
+            { required: true, message: "A duração é obrigatória." },
+            {
+              type: "number",
+              max: 2147483647,
+              message: "Valor máximo excedido.",
+            },
+          ]}
+        >
+          <InputNumber
+            style={{ width: "100%" }}
+            disabled={readOnly}
+            min={1}
+            max={2147483647}
+          />
         </Form.Item>
-        <Form.Item name="description" label="Descrição" rules={[{ required: true }]}>
-          <Input.TextArea rows={3} disabled={readOnly} />
+
+        <Form.Item
+          name="description"
+          label="Descrição"
+          rules={[
+            { required: true, message: "A descrição é obrigatória." },
+            { max: 255, message: "Máximo de 255 caracteres." },
+          ]}
+        >
+          <Input.TextArea rows={3} maxLength={255} disabled={readOnly} />
         </Form.Item>
       </Form>
     </Modal>
