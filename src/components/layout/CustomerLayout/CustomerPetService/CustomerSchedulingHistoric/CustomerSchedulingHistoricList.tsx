@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Card, Typography, Pagination, Spin, Empty } from "antd";
-import { getUserSchedullings } from "../../../../../api/Schedulling/Schedulling";
-import styles from "./CustomerSchedullingHistoricList.module.scss";
-import { SchedullingStatusDescription } from "../../../../../api/Schedulling/types/SchedullingStatus";
-import { SchedullingDetailResponse } from "../../../../../api/Schedulling/types/SchedullingDetailResponse";
+import styles from "./CustomerSchedulingHistoricList.module.scss";
+import { SchedulingDetailResponse } from "../../../../../api/Scheduling/types/SchedulingDetailResponse";
+import { getUserSchedulings } from "../../../../../api/Scheduling/Scheduling";
+import { SchedulingStatusDescription } from "../../../../../api/Scheduling/types/SchedulingStatus";
 
 const { Text } = Typography;
 
 const PAGE_SIZE = 10;
 
-const CustomerSchedullingHistoricList: React.FC = () => {
-  const [schedullings, setSchedullings] = useState<SchedullingDetailResponse[]>([]);
+const CustomerSchedulingHistoricList: React.FC = () => {
+  const [schedulings, setSchedulings] = useState<SchedulingDetailResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetchSchedullings(page);
+    fetchSchedulings(page);
   }, [page]);
 
-  const fetchSchedullings = async (page: number) => {
+  const fetchSchedulings = async (page: number) => {
     try {
       setLoading(true);
-      const data = await getUserSchedullings(page - 1, PAGE_SIZE);
-      setSchedullings(data.content || []);
+      const data = await getUserSchedulings(page - 1, PAGE_SIZE);
+      setSchedulings(data.content || []);
       setTotal(data.totalElements || 0);
     } finally {
       setLoading(false);
@@ -34,12 +34,12 @@ const CustomerSchedullingHistoricList: React.FC = () => {
     <>
       {loading ? (
         <Spin />
-      ) : schedullings.length === 0 ? (
+      ) : schedulings.length === 0 ? (
         <Empty description="Nenhum agendamento encontrado" />
       ) : (
         <>
           <div className={styles.gridContainer}>
-            {schedullings.map((s) => (
+            {schedulings.map((s) => (
               <Card
                 key={s.id}
                 hoverable
@@ -48,7 +48,7 @@ const CustomerSchedullingHistoricList: React.FC = () => {
                   <div className={styles.cardTitle}>
                     <span className={styles.serviceName}>{s.petService.name}</span>
                     <span className={`${styles.status} ${styles[s.status]}`}>
-                      {SchedullingStatusDescription[s.status]}
+                      {SchedulingStatusDescription[s.status]}
                     </span>
                   </div>
                 }
@@ -71,7 +71,7 @@ const CustomerSchedullingHistoricList: React.FC = () => {
                     )}
                     <div>
                       <Text strong>Horário: </Text>
-                      <Text>{new Date(s.schedullingHour).toLocaleString()}</Text>
+                      <Text>{new Date(s.schedulingHour).toLocaleString()}</Text>
                     </div>
                   </div>
                 </div>
@@ -91,4 +91,4 @@ const CustomerSchedullingHistoricList: React.FC = () => {
   );
 };
 
-export default CustomerSchedullingHistoricList;
+export default CustomerSchedulingHistoricList;

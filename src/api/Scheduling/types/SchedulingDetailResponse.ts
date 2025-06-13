@@ -1,11 +1,11 @@
 import { EmployeeResponse } from "../../Employee/type/EmployeeResponse";
 import { PetServiceResponse } from "../../PetService/types/PetServiceResponse";
-import { SchedullingStatus } from "./SchedullingStatus";
+import { SchedulingStatus } from "./SchedulingStatus";
 
-export interface SchedullingDetailResponse {
+export interface SchedulingDetailResponse {
   id: string;
   employee: EmployeeResponse | null;
   petService: PetServiceResponse;
-  schedullingHour: string;
-  status: SchedullingStatus;
+  schedulingHour: string;
+  status: SchedulingStatus;
 }

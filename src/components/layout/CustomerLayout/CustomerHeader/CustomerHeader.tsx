@@ -1,9 +1,8 @@
 import React from "react";
-import { Layout, Avatar, Typography } from "antd";
+import { Layout, Typography } from "antd";
 import {
   AppstoreOutlined,
   LogoutOutlined,
-  UserOutlined,
   ScheduleOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -34,14 +33,13 @@ const CustomerHeader: React.FC<Props> = ({ username }) => {
           <Text strong>Pet Services</Text>
         </Link>
 
-        <Link to="/schedullings" className={styles.linkText} style={{ marginLeft: 20, display: "flex", alignItems: "center", gap: 6 }}>
+        <Link to="/schedulings" className={styles.linkText} style={{ marginLeft: 20, display: "flex", alignItems: "center", gap: 6 }}>
           <ScheduleOutlined />
           <Text strong>Agendamentos</Text>
         </Link>
       </div>
 
       <div className={styles.rightContainer}>
-        <Avatar icon={<UserOutlined />} />
         <Text>{username}</Text>
         <LogoutOutlined
           onClick={handleLogout}

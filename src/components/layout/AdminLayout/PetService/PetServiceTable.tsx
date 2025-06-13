@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm } from "antd";
+import { Table, Button, Space, Popconfirm, Empty } from "antd";
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   deletePetService,
@@ -55,6 +55,7 @@ const PetServiceTable: React.FC = () => {
 
       <Table
         rowKey="id"
+        locale={{ emptyText: <Empty description="Nenhum serviço cadastrado" /> }}
         dataSource={services}
         loading={loading}
         pagination={{

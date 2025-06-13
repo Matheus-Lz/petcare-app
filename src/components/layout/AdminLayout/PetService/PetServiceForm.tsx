@@ -25,12 +25,14 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (service) {
-      form.setFieldsValue(service);
-    } else {
-      form.resetFields();
+    if (visible) {
+      if (service) {
+        form.setFieldsValue(service);
+      } else {
+        form.resetFields();
+      }
     }
-  }, [service, form]);
+  }, [visible, service, form]);
 
   const handleFinish = async (values: CreatePetServiceRequest) => {
     if (readOnly) return;
@@ -39,6 +41,7 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({
     } else {
       await createPetService(values);
     }
+    form.resetFields();
     onClose();
     onRefresh();
   };

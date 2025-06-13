@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, Tag } from "antd";
+import { Table, Button, Space, Popconfirm, Tag, Empty } from "antd";
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   deleteEmployee,
@@ -55,6 +55,7 @@ const EmployeeTable: React.FC = () => {
 
       <Table
         rowKey="id"
+        locale={{ emptyText: <Empty description="Nenhum funcionário cadastrado" /> }}
         dataSource={employees}
         loading={loading}
         pagination={{

@@ -1,4 +1,4 @@
-export type SchedullingStatus =
+export type SchedulingStatus =
     | "WAITING_FOR_ARRIVAL"
     | "PENDING"
     | "IN_PROGRESS"
@@ -6,7 +6,7 @@ export type SchedullingStatus =
     | "COMPLETED"
     | "NO_SHOW";
 
-export const SchedullingStatusDescription: Record<SchedullingStatus, string> = {
+export const SchedulingStatusDescription: Record<SchedulingStatus, string> = {
     WAITING_FOR_ARRIVAL: "Aguardando chegada do pet",
     PENDING: "Pendente",
     IN_PROGRESS: "Em progresso",

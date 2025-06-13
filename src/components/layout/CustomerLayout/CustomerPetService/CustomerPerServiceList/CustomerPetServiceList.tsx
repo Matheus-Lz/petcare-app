@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Spin, Pagination } from "antd";
+import { Row, Col, Spin, Pagination, Empty } from "antd";
 
 import styles from "./CustomerPetServiceList.module.scss";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
@@ -33,6 +33,8 @@ const CustomerPetServiceList: React.FC = () => {
     <>
       {loading ? (
         <Spin size="large" className={styles.spinContainer} />
+      ) : services.length === 0 ? (
+        <Empty description="Nenhum serviço cadastrado" />
       ) : (
         <>
           <Row gutter={[32, 32]} className={styles.container}>

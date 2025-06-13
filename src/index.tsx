@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'antd/dist/reset.css';
 import App from './App';
-import { message } from 'antd';
+import { ConfigProvider, message } from 'antd';
+import ptBR from 'antd/es/locale/pt_BR';
+import dayjs from 'dayjs';
 
 message.config({
   top: 80,
@@ -11,11 +13,13 @@ message.config({
   maxCount: 1,
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+dayjs.locale('pt-br');
+
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider locale={ptBR}>
+      <App />
+    </ConfigProvider>
   </React.StrictMode>
 );

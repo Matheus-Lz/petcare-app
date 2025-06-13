@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { DatePicker, Select, Button, Typography, message, Spin } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
-  createSchedulling,
+  createScheduling,
   getAvailableTimes,
   getAvailableDays,
-} from "../../../../../api/Schedulling/Schedulling";
+} from "../../../../../api/Scheduling/Scheduling";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
 import styles from "./CustomerScheduleForm.module.scss";
 
@@ -79,10 +79,10 @@ const CustomerScheduleForm: React.FC<ScheduleFormProps> = ({
     }
 
     setSubmitting(true);
-    const schedullingHour = `${selectedDate.format("YYYY-MM-DD")}T${selectedTime}:00`;
+    const schedulingHour = `${selectedDate.format("YYYY-MM-DD")}T${selectedTime}:00`;
 
     try {
-      await createSchedulling(service.id, schedullingHour);
+      await createScheduling(service.id, schedulingHour);
       message.success("Agendamento realizado com sucesso!");
       onSuccess?.();
     } catch {
