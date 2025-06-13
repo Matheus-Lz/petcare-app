@@ -44,10 +44,11 @@ const AuthPage: React.FC = () => {
       notifySuccess("Login realizado com sucesso!");
 
       switch (role) {
-        case "ADMIN":
         case "SUPER_ADMIN":
-        case "EMPLOYEE":
           navigate("/dashboard/pet-service");
+          break;
+        case "EMPLOYEE":
+          navigate("/dashboard/scheduling-management");
           break;
         case "USER":
           navigate("/pet-service");

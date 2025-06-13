@@ -25,13 +25,25 @@ const Sidebar = () => {
     <Sider theme="light" width={220}>
       <div className={styles.sidebarTitle}>PetCare</div>
       <Menu mode="inline" className={styles.menuContainer}>
+        {role === "SUPER_ADMIN" || role === "EMPLOYEE" && (
         <Menu.Item
-          key="pet-service"
+          key="scheduling-management"
           icon={<ScissorOutlined />}
-          onClick={() => navigate("/dashboard/pet-service")}
+          onClick={() => navigate("/dashboard/scheduling-management")}
         >
-          Serviços
+          Gerenciar serviços
         </Menu.Item>
+        )}
+
+        {role === "SUPER_ADMIN" && (
+          <Menu.Item
+            key="pet-service"
+            icon={<ScissorOutlined />}
+            onClick={() => navigate("/dashboard/pet-service")}
+          >
+            Serviços
+          </Menu.Item>
+        )}
 
         {role === "SUPER_ADMIN" && (
           <Menu.Item
