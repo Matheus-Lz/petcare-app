@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { DatePicker, Select, Button, Typography, message, Spin } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -28,21 +28,24 @@ const CustomerScheduleForm: React.FC<ScheduleFormProps> = ({
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchAvailableDays = async (monthStart: Dayjs) => {
-    try {
-      const days = await getAvailableDays(
-        service.id,
-        monthStart.startOf("month").format("YYYY-MM-DD")
-      );
-      setAvailableDays(days);
-    } catch {
-      message.error("Erro ao carregar dias disponíveis");
-    }
-  };
+  const fetchAvailableDays = useCallback(
+    async (monthStart: Dayjs) => {
+      try {
+        const days = await getAvailableDays(
+          service.id,
+          monthStart.startOf("month").format("YYYY-MM-DD")
+        );
+        setAvailableDays(days);
+      } catch {
+        message.error("Erro ao carregar dias disponíveis");
+      }
+    },
+    [service.id]
+  );
 
   useEffect(() => {
     fetchAvailableDays(dayjs());
-  }, [service.id]);
+  }, [fetchAvailableDays]);
 
   useEffect(() => {
     if (!selectedDate) {
@@ -54,7 +57,10 @@ const CustomerScheduleForm: React.FC<ScheduleFormProps> = ({
     const fetchAvailableTimes = async () => {
       setLoadingTimes(true);
       try {
-        const times = await getAvailableTimes(service.id, selectedDate.format("YYYY-MM-DD"));
+        const times = await getAvailableTimes(
+          service.id,
+          selectedDate.format("YYYY-MM-DD")
+        );
         setAvailableTimes(times.map((time) => time.slice(0, 5)));
         setSelectedTime(null);
       } catch {

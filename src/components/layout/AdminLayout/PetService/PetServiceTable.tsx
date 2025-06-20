@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Table, Button, Space, Popconfirm, Empty, Tooltip } from "antd";
 import {
   EditOutlined,
@@ -24,7 +24,7 @@ const PetServiceTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  const loadData = async (page: number = currentPage) => {
+  const loadData = useCallback(async (page: number = currentPage) => {
     setLoading(true);
     try {
       const data = await getAllPetServices(page - 1, pageSize);
@@ -33,11 +33,11 @@ const PetServiceTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
 
   useEffect(() => {
     loadData();
-  }, [currentPage]);
+  }, [loadData]);
 
   const handleDelete = async (id: string) => {
     await deletePetService(id);

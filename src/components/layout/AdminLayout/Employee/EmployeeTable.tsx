@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Table, Button, Space, Popconfirm, Tag, Empty, Tooltip } from "antd";
 import {
   EditOutlined,
@@ -27,7 +27,7 @@ const EmployeeTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  const loadData = async (page: number = currentPage) => {
+  const loadData = useCallback(async (page: number = currentPage) => {
     setLoading(true);
     try {
       const data = await getAllEmployees(page - 1, pageSize);
@@ -36,11 +36,11 @@ const EmployeeTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
 
   useEffect(() => {
     loadData();
-  }, [currentPage]);
+  }, [loadData]);
 
   const handleDelete = async (id: string) => {
     await deleteEmployee(id);
