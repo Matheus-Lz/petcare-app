@@ -9,6 +9,17 @@ export const createScheduling = async (petServiceId: string, schedulingHour: str
   });
 };
 
+export const updateScheduling = async (
+  id: string,
+  petServiceId: string,
+  schedulingHour: string
+): Promise<void> => {
+  await api.put(`/schedulings/${id}`, {
+    petServiceId,
+    schedulingHour,
+  });
+};
+
 export const getAvailableTimes = async (
   petServiceId: string,
   date: string
