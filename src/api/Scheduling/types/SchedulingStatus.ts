@@ -14,3 +14,12 @@ export const SchedulingStatusDescription: Record<SchedulingStatus, string> = {
     COMPLETED: "Finalizado",
     NO_SHOW: "Não compareceu",
 };
+
+export const SchedulingStatusColorMap: Record<SchedulingStatus, string> = {
+  WAITING_FOR_ARRIVAL: "orange",
+  PENDING: "cyan",
+  IN_PROGRESS: "blue",
+  WAITING_FOR_PICKUP: "purple",
+  COMPLETED: "green",
+  NO_SHOW: "red",
+};

@@ -1,6 +1,9 @@
+import React from "react";
+import { Result, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import { FrownOutlined } from "@ant-design/icons";
 
-const NotFound = () => {
+const NotFound: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -10,26 +13,18 @@ const NotFound = () => {
   };
 
   return (
-    <div style={{ padding: 40, textAlign: "center" }}>
-      <h1>404</h1>
-      <h2>Página não encontrada</h2>
-      <p>Você não tem permissão para acessar esta página ou ela não existe.</p>
-      <button
-        onClick={handleLogout}
-        style={{
-          background: "none",
-          border: "none",
-          color: "#1890ff",
-          textDecoration: "underline",
-          fontWeight: "bold",
-          cursor: "pointer",
-          padding: 0,
-          fontSize: "inherit",
-          fontFamily: "inherit",
-        }}
-      >
-        Voltar para a página de login
-      </button>
+    <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", backgroundColor: "#f0f2f5" }}>
+      <Result
+        icon={<FrownOutlined style={{ color: "#ff4d4f" }} />}
+        status="404"
+        title="Página não encontrada"
+        subTitle="Você não tem permissão para acessar esta página ou ela não existe."
+        extra={
+          <Button type="primary" onClick={handleLogout}>
+            Voltar para a página de login
+          </Button>
+        }
+      />
     </div>
   );
 };

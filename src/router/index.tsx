@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import AuthPage from "../pages/Auth/AuthPage";
 import PetServicesPage from "../pages/PetServicePage";
 import WorkingPeriodPage from "../pages/WorkingPeriodPage";
@@ -6,8 +11,8 @@ import EmployeePage from "../pages/EmployeePage";
 import CustomerPetServicePage from "../pages/CustomerPetServicePage";
 import CustomerSchedulingHistoricPage from "../pages/CustomerSchedulingHistoricPage";
 import ProtectedRoute from "../components/common/ProtectedRoute ";
-import KanbanSchedulingPage from "../pages/KanbanSchedulingPage";
 import NotFound from "../components/common/NotFound";
+import SchedulingByDateTablePage from "../pages/SchedulingByDateTable";
 
 const AppRoutes = () => {
   return (
@@ -19,8 +24,8 @@ const AppRoutes = () => {
         <Route
           path="/dashboard/scheduling-management"
           element={
-            <ProtectedRoute allowedRoles={["SUPER_ADMIN", "EMPLOYEE"]}>
-              <KanbanSchedulingPage />
+            <ProtectedRoute allowedRoles={["EMPLOYEE", "SUPER_ADMIN"]}>
+              <SchedulingByDateTablePage />
             </ProtectedRoute>
           }
         />
@@ -53,7 +58,10 @@ const AppRoutes = () => {
         />
 
         <Route path="/pet-service" element={<CustomerPetServicePage />} />
-        <Route path="/schedulings" element={<CustomerSchedulingHistoricPage />} />
+        <Route
+          path="/schedulings"
+          element={<CustomerSchedulingHistoricPage />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

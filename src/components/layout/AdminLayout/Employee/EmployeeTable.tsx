@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, Tag, Empty } from "antd";
-import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Table, Button, Space, Popconfirm, Tag, Empty, Tooltip } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import {
   deleteEmployee,
   getAllEmployees,
 } from "../../../../api/Employee/Employee";
 import EmployeeForm from "./EmployeeForm";
-import { EmployeeResponse, PetServiceEmployeeResponse } from "../../../../api/Employee/type/EmployeeResponse";
+import {
+  EmployeeResponse,
+  PetServiceEmployeeResponse,
+} from "../../../../api/Employee/type/EmployeeResponse";
 
 const EmployeeTable: React.FC = () => {
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponse | null>(null);
+  const [selectedEmployee, setSelectedEmployee] =
+    useState<EmployeeResponse | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
@@ -55,7 +64,9 @@ const EmployeeTable: React.FC = () => {
 
       <Table
         rowKey="id"
-        locale={{ emptyText: <Empty description="Nenhum funcionário cadastrado" /> }}
+        locale={{
+          emptyText: <Empty description="Nenhum funcionário cadastrado" />,
+        }}
         dataSource={employees}
         loading={loading}
         pagination={{
@@ -68,19 +79,25 @@ const EmployeeTable: React.FC = () => {
           {
             title: "Nome",
             dataIndex: ["user", "name"],
-            render: (_: any, record: EmployeeResponse) => record.user?.name || "-",
+            render: (_: any, record: EmployeeResponse) =>
+              record.user?.name || "-",
           },
           {
             title: "Email",
             dataIndex: ["user", "email"],
-            render: (_: any, record: EmployeeResponse) => record.user?.email || "-",
+            render: (_: any, record: EmployeeResponse) =>
+              record.user?.email || "-",
           },
           {
             title: "Serviços",
             dataIndex: "petServiceList",
             render: (petServiceList: PetServiceEmployeeResponse[]) =>
               petServiceList.map((petService) => (
-                <Tag key={petService.id} color="blue" style={{ marginBottom: 4 }}>
+                <Tag
+                  key={petService.id}
+                  color="blue"
+                  style={{ marginBottom: 4 }}
+                >
                   {petService.name}
                 </Tag>
               )),
@@ -89,28 +106,38 @@ const EmployeeTable: React.FC = () => {
             title: "Ações",
             render: (_: any, record: EmployeeResponse) => (
               <Space>
-                <Button
-                  icon={<EyeOutlined />}
-                  onClick={() => {
-                    setSelectedEmployee(record);
-                    setIsReadOnly(true);
-                    setShowModal(true);
-                  }}
-                />
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => {
-                    setSelectedEmployee(record);
-                    setIsReadOnly(false);
-                    setShowModal(true);
-                  }}
-                />
-                <Popconfirm
-                  title="Deseja excluir?"
-                  onConfirm={() => handleDelete(record.id)}
-                >
-                  <Button icon={<DeleteOutlined />} danger />
-                </Popconfirm>
+                <Tooltip title="Visualizar">
+                  <Button
+                    icon={<EyeOutlined />}
+                    onClick={() => {
+                      setSelectedEmployee(record);
+                      setIsReadOnly(true);
+                      setShowModal(true);
+                    }}
+                  />
+                </Tooltip>
+
+                <Tooltip title="Editar">
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      setSelectedEmployee(record);
+                      setIsReadOnly(false);
+                      setShowModal(true);
+                    }}
+                  />
+                </Tooltip>
+
+                <Tooltip title="Excluir">
+                  <Popconfirm
+                    title="Deseja excluir?"
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Sim"
+                    cancelText="Não"
+                  >
+                    <Button icon={<DeleteOutlined />} danger />
+                  </Popconfirm>
+                </Tooltip>
               </Space>
             ),
           },

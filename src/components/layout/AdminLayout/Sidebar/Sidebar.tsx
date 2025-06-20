@@ -25,14 +25,14 @@ const Sidebar = () => {
     <Sider theme="light" width={220}>
       <div className={styles.sidebarTitle}>PetCare</div>
       <Menu mode="inline" className={styles.menuContainer}>
-        {role === "SUPER_ADMIN" || role === "EMPLOYEE" && (
-        <Menu.Item
-          key="scheduling-management"
-          icon={<ScissorOutlined />}
-          onClick={() => navigate("/dashboard/scheduling-management")}
-        >
-          Gerenciar serviços
-        </Menu.Item>
+        {(role === "SUPER_ADMIN" || role === "EMPLOYEE") && (
+          <Menu.Item
+            key="scheduling-management"
+            icon={<CalendarOutlined />}
+            onClick={() => navigate("/dashboard/scheduling-management")}
+          >
+            Gerenciar serviços
+          </Menu.Item>
         )}
 
         {role === "SUPER_ADMIN" && (

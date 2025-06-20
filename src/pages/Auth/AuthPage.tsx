@@ -40,6 +40,7 @@ const AuthPage: React.FC = () => {
       storage.setItem("token", token);
       storage.setItem("role", role);
       storage.setItem("name", name);
+      storage.setItem("userId", "1234");
 
       notifySuccess("Login realizado com sucesso!");
 
