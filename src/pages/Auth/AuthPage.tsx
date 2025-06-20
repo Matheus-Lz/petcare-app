@@ -34,13 +34,13 @@ const AuthPage: React.FC = () => {
   const handleLogin = async (values: any) => {
     setLoading(true);
     try {
-      const { token, role, name } = await loginUser(values);
+      const { token, role, name, userId } = await loginUser(values);
 
       const storage = values.remember ? localStorage : sessionStorage;
       storage.setItem("token", token);
       storage.setItem("role", role);
       storage.setItem("name", name);
-      storage.setItem("userId", "1234");
+      storage.setItem("userId", userId);
 
       notifySuccess("Login realizado com sucesso!");
 
