@@ -25,3 +25,9 @@ export const updateUser = async (
 ): Promise<void> => {
   await api.put(`/user/${id}`, data);
 };
+
+export const forgotPassword = (email: string) =>
+  api.post("/user/forgot-password", { email });
+
+export const resetPassword = (token: string, newPassword: string) =>
+  api.post("/user/reset-password", { token, newPassword });

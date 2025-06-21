@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, Tabs, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
-import { loginUser, registerUser } from "../../api/user/UserService";
-import { notifySuccess, notifyError } from "../../utils/notifications";
-import styles from "./AuthPage.module.scss";
+import { loginUser, registerUser } from "../../../api/user/UserService";
+import { notifySuccess, notifyError } from "../../../utils/notifications";
+import styles from "./Auth.module.scss";
 
 const { TabPane } = Tabs;
 
-const AuthPage: React.FC = () => {
+const Auth: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
@@ -109,13 +109,31 @@ const AuthPage: React.FC = () => {
                 >
                   <Input.Password size="large" />
                 </Form.Item>
-                <Form.Item
-                  name="remember"
-                  valuePropName="checked"
-                  initialValue={false}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
+                  }}
                 >
-                  <Checkbox>Manter conectado</Checkbox>
-                </Form.Item>
+                  <Form.Item
+                    name="remember"
+                    valuePropName="checked"
+                    noStyle
+                    initialValue={false}
+                  >
+                    <Checkbox>Manter conectado</Checkbox>
+                  </Form.Item>
+                  <Button
+                    type="link"
+                    size="small"
+                    onClick={() => navigate("/forgot-password")}
+                    style={{ padding: 0 }}
+                  >
+                    Esqueceu sua senha?
+                  </Button>
+                </div>
+
                 <Form.Item>
                   <Button
                     type="primary"
@@ -222,4 +240,4 @@ const AuthPage: React.FC = () => {
   );
 };
 
-export default AuthPage;
+export default Auth;
