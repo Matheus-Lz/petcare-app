@@ -27,12 +27,14 @@ import {
   SchedulingStatusColorMap,
 } from "../../../../api/Scheduling/types/SchedulingStatus";
 import {
-  delegateSchedulingToMe,
   deleteScheduling,
   getSchedulingsByDate,
   updateSchedulingStatus,
+  delegateScheduling,
 } from "../../../../api/Scheduling/Scheduling";
 import { SchedulingDetailResponse } from "../../../../api/Scheduling/types/SchedulingDetailResponse";
+import { getAllEmployees } from "../../../../api/Employee/Employee";
+import { EmployeeResponse } from "../../../../api/Employee/type/EmployeeResponse";
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -44,8 +46,12 @@ export const SchedulingByDateTable: React.FC = () => {
 
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [assignModalVisible, setAssignModalVisible] = useState(false);
+
   const [selectedScheduling, setSelectedScheduling] = useState<SchedulingDetailResponse | null>(null);
   const [newStatus, setNewStatus] = useState<SchedulingStatus | null>(null);
+  const [employeeList, setEmployeeList] = useState<EmployeeResponse[]>([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
 
   const loadSchedulings = async (date: Dayjs) => {
     setLoading(true);
@@ -60,22 +66,20 @@ export const SchedulingByDateTable: React.FC = () => {
     }
   };
 
+  const loadEmployees = async () => {
+    try {
+      const res = await getAllEmployees(0, 100);
+      setEmployeeList(res.content);
+    } catch {
+      message.error("Erro ao carregar funcionários");
+    }
+  };
+
   useEffect(() => {
     if (selectedDate && selectedDate.isValid()) {
       loadSchedulings(selectedDate);
     }
   }, [selectedDate]);
-
-  const handleDelegate = async (id: string) => {
-    if (!selectedDate) return;
-    try {
-      await delegateSchedulingToMe(id);
-      message.success("Delegado para você com sucesso");
-      loadSchedulings(selectedDate);
-    } catch {
-      message.error("Falha ao delegar");
-    }
-  };
 
   const handleUpdateStatus = async () => {
     if (!selectedDate || !selectedScheduling || !newStatus) return;
@@ -89,6 +93,19 @@ export const SchedulingByDateTable: React.FC = () => {
     }
   };
 
+  const handleAssignEmployee = async () => {
+    if (!selectedScheduling || !selectedEmployeeId) return;
+    try {
+      await delegateScheduling(selectedScheduling.id, selectedEmployeeId);
+      message.success("Responsável atribuído com sucesso");
+      setAssignModalVisible(false);
+      setSelectedEmployeeId(null);
+      loadSchedulings(selectedDate);
+    } catch {
+      message.error("Erro ao atribuir responsável");
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!selectedDate) return;
     try {
@@ -98,6 +115,12 @@ export const SchedulingByDateTable: React.FC = () => {
     } catch {
       message.error("Erro ao excluir agendamento");
     }
+  };
+
+  const openAssignModal = (scheduling: SchedulingDetailResponse) => {
+    setSelectedScheduling(scheduling);
+    loadEmployees();
+    setAssignModalVisible(true);
   };
 
   const columns: ColumnsType<SchedulingDetailResponse> = [
@@ -162,10 +185,10 @@ export const SchedulingByDateTable: React.FC = () => {
             />
           </Tooltip>
 
-          <Tooltip title="Delegar para mim">
+          <Tooltip title="Atribuir responsável">
             <Button
               icon={<UserAddOutlined />}
-              onClick={() => handleDelegate(record.id)}
+              onClick={() => openAssignModal(record)}
             />
           </Tooltip>
 
@@ -254,6 +277,29 @@ export const SchedulingByDateTable: React.FC = () => {
           {Object.entries(SchedulingStatusDescription).map(([key, desc]) => (
             <Option key={key} value={key}>
               {desc}
+            </Option>
+          ))}
+        </Select>
+      </Modal>
+
+      <Modal
+        title="Atribuir Funcionário"
+        open={assignModalVisible}
+        onCancel={() => setAssignModalVisible(false)}
+        onOk={handleAssignEmployee}
+        okButtonProps={{ disabled: !selectedEmployeeId }}
+      >
+        <Select
+          showSearch
+          placeholder="Selecione um funcionário"
+          optionFilterProp="children"
+          value={selectedEmployeeId ?? undefined}
+          onChange={(value) => setSelectedEmployeeId(value)}
+          style={{ width: "100%" }}
+        >
+          {employeeList.map((emp) => (
+            <Option key={emp.id} value={emp.id}>
+              {emp.user.name}
             </Option>
           ))}
         </Select>

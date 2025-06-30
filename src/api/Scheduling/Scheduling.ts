@@ -52,8 +52,11 @@ export const getSchedulingsByDate = async (date: string): Promise<SchedulingDeta
   return response.data;
 };
 
-export const delegateSchedulingToMe = async (id: string): Promise<void> => {
-  await api.patch(`/schedulings/${id}/delegate`);
+export const delegateScheduling = async (
+  schedulingId: string,
+  employeeId: string
+): Promise<void> => {
+  await api.patch(`/schedulings/${schedulingId}/delegate/${employeeId}`);
 };
 
 export const updateSchedulingStatus = async (id: string, status: SchedulingStatus): Promise<void> => {
