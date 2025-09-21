@@ -31,13 +31,11 @@ test("renderiza abas e campos do login", () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByRole("tab", { name: /Entrar/i })).toBeInTheDocument();
-  expect(screen.getByRole("tab", { name: /Cadastre-se/i })).toBeInTheDocument();
-
-  expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/Senha/i)).toBeInTheDocument();
-
-  expect(screen.getByRole("button", { name: /^Entrar$/i })).toBeInTheDocument();
+  expect(screen.getByRole("tab", { name: /entrar/i })).toBeInTheDocument();
+  expect(screen.getByRole("tab", { name: /cadastre-se/i })).toBeInTheDocument();
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /^entrar$/i })).toBeInTheDocument();
 });
 
 test("alterna para a aba de cadastro", async () => {
@@ -47,8 +45,8 @@ test("alterna para a aba de cadastro", async () => {
     </MemoryRouter>
   );
 
-  await userEvent.click(screen.getByRole("tab", { name: /Cadastre-se/i }));
+  await userEvent.click(screen.getByRole("tab", { name: /cadastre-se/i }));
 
-  expect(screen.getByLabelText(/^Nome$/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/CPF\/CNPJ/i)).toBeInTheDocument();
+  expect(await screen.findByLabelText(/^nome$/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/cpf\/cnpj/i)).toBeInTheDocument();
 });
