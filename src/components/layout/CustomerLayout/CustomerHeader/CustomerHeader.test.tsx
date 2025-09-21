@@ -63,8 +63,8 @@ describe("CustomerHeader", () => {
   });
 
   test("logout limpa storages e navega para /auth", async () => {
-    const spyLocal = jest.spyOn(window.localStorage.__proto__, "clear");
-    const spySession = jest.spyOn(window.sessionStorage.__proto__, "clear");
+    const spyLocal = jest.spyOn(Object.getPrototypeOf(window.localStorage), "clear");
+    const spySession = jest.spyOn(Object.getPrototypeOf(window.sessionStorage), "clear");
 
     renderHeader();
 
