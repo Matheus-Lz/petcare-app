@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerPetServiceCard from "./CustomerPerServiceCard";
 
@@ -7,10 +7,10 @@ jest.mock("antd", () => {
   const antd = jest.requireActual("antd");
   const Modal = ({ visible, open, children, title, onCancel }: any) =>
     visible || open ? (
-      <div role="dialog" aria-label={title}>
+      <dialog open aria-label={title}>
         {children}
         <button onClick={onCancel}>fechar</button>
-      </div>
+      </dialog>
     ) : null;
   return { ...antd, Modal };
 });
@@ -47,10 +47,18 @@ describe("CustomerPetServiceCard", () => {
     render(<CustomerPetServiceCard service={service as any} />);
 
     await userEvent.click(screen.getByRole("button", { name: /agendar/i }));
-    expect(screen.getByRole("dialog", { name: /agendar serviço/i })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("dialog", { name: /agendar serviço/i })
+    ).toBeInTheDocument();
     expect(screen.getByTestId("schedule-form")).toBeInTheDocument();
 
     await userEvent.click(screen.getByText("ok"));
-    expect(screen.queryByRole("dialog", { name: /agendar serviço/i })).not.toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: /agendar serviço/i })
+      ).not.toBeInTheDocument()
+    );
   });
 });

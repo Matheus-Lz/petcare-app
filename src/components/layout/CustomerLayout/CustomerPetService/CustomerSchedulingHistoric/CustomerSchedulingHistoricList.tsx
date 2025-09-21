@@ -106,95 +106,94 @@ const CustomerSchedulingHistoricList: React.FC = () => {
     }
   };
 
-  return (
-    <>
-      {loading ? (
-        <Spin />
-      ) : schedulings.length === 0 ? (
-        <Empty description="Nenhum agendamento encontrado" />
-      ) : (
-        <>
-          <div className={styles.gridContainer}>
-            {schedulings.map((s) => (
-              <Card
-                key={s.id}
-                hoverable
-                className={styles.cardHorizontal}
-                title={
-                  <div className={styles.cardTitle}>
-                    <span className={styles.serviceName}>
-                      {s.petService.name}
-                    </span>
-                    <span className={`${styles.status} ${styles[s.status]}`}>
-                      {SchedulingStatusDescription[s.status]}
-                    </span>
-                  </div>
-                }
-                extra={
-                  s.status === "WAITING_FOR_ARRIVAL" ? (
-                    <div className={styles.actionButtons}>
-                      <Tooltip title="Editar">
-                        <Button
-                          aria-label="edit"
-                          size="small"
-                          icon={<EditOutlined />}
-                          onClick={() => openEditModal(s)}
-                        />
-                      </Tooltip>
+  let body: React.ReactNode;
+  if (loading) {
+    body = <Spin />;
+  } else if (schedulings.length === 0) {
+    body = <Empty description="Nenhum agendamento encontrado" />;
+  } else {
+    body = (
+      <>
+        <div className={styles.gridContainer}>
+          {schedulings.map((s) => (
+            <Card
+              key={s.id}
+              hoverable
+              className={styles.cardHorizontal}
+              title={
+                <div className={styles.cardTitle}>
+                  <span className={styles.serviceName}>{s.petService.name}</span>
+                  <span className={`${styles.status} ${styles[s.status]}`}>
+                    {SchedulingStatusDescription[s.status]}
+                  </span>
+                </div>
+              }
+              extra={
+                s.status === "WAITING_FOR_ARRIVAL" ? (
+                  <div className={styles.actionButtons}>
+                    <Tooltip title="Editar">
+                      <Button
+                        aria-label="edit"
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={() => openEditModal(s)}
+                      />
+                    </Tooltip>
 
-                      <Popconfirm
-                        title="Deseja excluir este agendamento?"
-                        onConfirm={() => handleDeleteFromCard(s.id)}
-                        okText="Sim"
-                        cancelText="Não"
-                      >
-                        <Tooltip title="Excluir">
-                          <Button
-                            aria-label="delete"
-                            size="small"
-                            icon={<DeleteOutlined />}
-                            danger
-                          />
-                        </Tooltip>
-                      </Popconfirm>
-                    </div>
-                  ) : null
-                }
-              >
-                <div className={styles.cardContent}>
-                  <div className={styles.cardInfo}>
+                    <Popconfirm
+                      title="Deseja excluir este agendamento?"
+                      onConfirm={() => handleDeleteFromCard(s.id)}
+                      okText="Sim"
+                      cancelText="Não"
+                    >
+                      <Tooltip title="Excluir">
+                        <Button aria-label="delete" size="small" icon={<DeleteOutlined />} danger />
+                      </Tooltip>
+                    </Popconfirm>
+                  </div>
+                ) : null
+              }
+            >
+              <div className={styles.cardContent}>
+                <div className={styles.cardInfo}>
+                  <div>
+                    <Text strong>Preço: </Text>
+                    <Text>R$ {s.petService.price.toFixed(2)}</Text>
+                  </div>
+                  <div>
+                    <Text strong>Duração: </Text>
+                    <Text>{s.petService.time} min</Text>
+                  </div>
+                  {s.employee && (
                     <div>
-                      <Text strong>Preço: </Text>
-                      <Text>R$ {s.petService.price.toFixed(2)}</Text>
+                      <Text strong>Funcionário: </Text>
+                      <Text>{s.employee.user.name}</Text>
                     </div>
-                    <div>
-                      <Text strong>Duração: </Text>
-                      <Text>{s.petService.time} min</Text>
-                    </div>
-                    {s.employee && (
-                      <div>
-                        <Text strong>Funcionário: </Text>
-                        <Text>{s.employee.user.name}</Text>
-                      </div>
-                    )}
-                    <div>
-                      <Text strong>Horário: </Text>
-                      <Text>{new Date(s.schedulingHour).toLocaleString()}</Text>
-                    </div>
+                  )}
+                  <div>
+                    <Text strong>Horário: </Text>
+                    <Text>{new Date(s.schedulingHour).toLocaleString()}</Text>
                   </div>
                 </div>
-              </Card>
-            ))}
-          </div>
-          <Pagination
-            current={page}
-            total={total}
-            pageSize={PAGE_SIZE}
-            onChange={setPage}
-            className={styles.paginationContainer}
-          />
-        </>
-      )}
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <Pagination
+          current={page}
+          total={total}
+          pageSize={PAGE_SIZE}
+          onChange={setPage}
+          className={styles.paginationContainer}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      {body}
 
       <Modal
         title="Editar Agendamento"

@@ -16,6 +16,7 @@ jest.mock("../../../../../api/Scheduling/Scheduling", () => ({
 jest.mock("antd", () => {
   const antd = jest.requireActual("antd");
   const dj = jest.requireActual("dayjs");
+
   const DatePicker = ({ value, onChange }: any) => (
     <input
       aria-label="date"
@@ -24,19 +25,22 @@ jest.mock("antd", () => {
       onChange={(e) => onChange?.(dj(e.target.value, "YYYY-MM-DD"))}
     />
   );
-  const Select: any = ({ value, onChange, children, disabled, placeholder }: any) => (
+
+  const Select: any = ({ value, onChange, children, disabled }: any) => (
     <select
       aria-label="time"
       value={value ?? ""}
       onChange={(e) => onChange?.(e.target.value)}
       disabled={disabled}
-      aria-placeholder={placeholder}
     >
       <option value="" />
       {children}
     </select>
   );
-  Select.Option = ({ value, children }: any) => <option value={value}>{children}</option>;
+  Select.Option = ({ value, children }: any) => (
+    <option value={value}>{children}</option>
+  );
+
   return {
     ...antd,
     DatePicker,
@@ -74,7 +78,12 @@ describe("CustomerScheduleForm", () => {
     expect(screen.getByText("Banho")).toBeInTheDocument();
     expect(screen.getByText("Preço: R$ 50.00")).toBeInTheDocument();
     expect(screen.getByText("Duração: 30 minutos")).toBeInTheDocument();
-    await waitFor(() => expect(mockGetAvailableDays).toHaveBeenCalledWith("svc1", expect.any(String)));
+    await waitFor(() =>
+      expect(mockGetAvailableDays).toHaveBeenCalledWith(
+        "svc1",
+        expect.any(String)
+      )
+    );
   });
 
   test("seleciona data, carrega horários e confirma agendamento", async () => {
@@ -98,7 +107,10 @@ describe("CustomerScheduleForm", () => {
     await userEvent.click(btn);
 
     await waitFor(() =>
-      expect(mockCreateScheduling).toHaveBeenCalledWith("svc1", "2025-01-10T09:00:00")
+      expect(mockCreateScheduling).toHaveBeenCalledWith(
+        "svc1",
+        "2025-01-10T09:00:00"
+      )
     );
   });
 
@@ -108,11 +120,13 @@ describe("CustomerScheduleForm", () => {
     expect(btn).toBeDisabled();
 
     mockGetAvailableTimes.mockResolvedValueOnce(["09:00:00"]);
+
     const date = screen.getByLabelText("date");
     await userEvent.type(date, "2025-01-10");
 
     const time = await screen.findByLabelText("time");
     await userEvent.selectOptions(time, "09:00");
+
     expect(btn).not.toBeDisabled();
   });
 });

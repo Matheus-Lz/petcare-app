@@ -15,12 +15,11 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 class ResizeObserverMock {
-  constructor(_cb?: any) {}
   observe = jest.fn();
   unobserve = jest.fn();
   disconnect = jest.fn();
 }
 
-if (!('ResizeObserver' in window)) {
+if (!("ResizeObserver" in window)) {
   (window as any).ResizeObserver = ResizeObserverMock as any;
 }

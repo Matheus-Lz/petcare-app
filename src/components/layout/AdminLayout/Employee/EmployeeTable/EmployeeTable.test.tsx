@@ -13,19 +13,21 @@ jest.mock("../../../../../api/Employee/Employee", () => ({
 
 jest.mock("../EmployeeForm/EmployeeForm", () => ({
   __esModule: true,
-  default: ({ visible, readOnly, employee, onClose }: any) =>
-    visible ? (
+  default: (props: any) => {
+    const { visible, readOnly, employee, onClose } = props;
+    if (!visible) return null;
+
+    let title = "Novo Funcionário";
+    if (readOnly) title = "Visualizar Funcionário";
+    else if (employee) title = "Editar Funcionário";
+
+    return (
       <div>
-        <div data-testid="employee-form">
-          {readOnly
-            ? "Visualizar Funcionário"
-            : employee
-            ? "Editar Funcionário"
-            : "Novo Funcionário"}
-        </div>
+        <div data-testid="employee-form">{title}</div>
         <button onClick={onClose}>Fechar</button>
       </div>
-    ) : null,
+    );
+  },
 }));
 
 function seedEmployees() {
@@ -53,17 +55,20 @@ describe("EmployeeTable", () => {
 
   test("carrega e exibe funcionários", async () => {
     seedEmployees();
+
     render(<EmployeeTable />);
 
     await waitFor(() => {
       expect(screen.getByText("Ana")).toBeInTheDocument();
       expect(screen.getByText("Beto")).toBeInTheDocument();
-      expect(screen.getAllByText(/Banho|Tosa/).length).toBeGreaterThan(0);
     });
+
+    expect(screen.getAllByText(/Banho|Tosa/).length).toBeGreaterThan(0);
   });
 
   test("abre modal de novo funcionário", async () => {
     seedEmployees();
+
     render(<EmployeeTable />);
 
     await waitFor(() => expect(mockGetAllEmployees).toHaveBeenCalled());
@@ -71,6 +76,7 @@ describe("EmployeeTable", () => {
     await userEvent.click(
       screen.getByRole("button", { name: /Adicionar Funcionário/i })
     );
+
     expect(screen.getByTestId("employee-form")).toHaveTextContent(
       "Novo Funcionário"
     );
@@ -78,12 +84,14 @@ describe("EmployeeTable", () => {
 
   test("abre modal de visualizar funcionário", async () => {
     seedEmployees();
+
     render(<EmployeeTable />);
 
     await waitFor(() => expect(screen.getByText("Ana")).toBeInTheDocument());
 
-    const row = screen.getByText("Ana").closest("tr")!;
+    const row = screen.getByText("Ana").closest("tr") as HTMLElement;
     const buttons = within(row).getAllByRole("button");
+
     await userEvent.click(buttons[0]);
 
     expect(screen.getByTestId("employee-form")).toHaveTextContent(
@@ -93,12 +101,14 @@ describe("EmployeeTable", () => {
 
   test("abre modal de editar funcionário", async () => {
     seedEmployees();
+
     render(<EmployeeTable />);
 
     await waitFor(() => expect(screen.getByText("Beto")).toBeInTheDocument());
 
-    const row = screen.getByText("Beto").closest("tr")!;
+    const row = screen.getByText("Beto").closest("tr") as HTMLElement;
     const buttons = within(row).getAllByRole("button");
+
     await userEvent.click(buttons[1]);
 
     expect(screen.getByTestId("employee-form")).toHaveTextContent(
@@ -108,12 +118,14 @@ describe("EmployeeTable", () => {
 
   test("exclui funcionário com confirmação", async () => {
     seedEmployees();
+
     render(<EmployeeTable />);
 
     await waitFor(() => expect(screen.getByText("Ana")).toBeInTheDocument());
 
-    const row = screen.getByText("Ana").closest("tr")!;
+    const row = screen.getByText("Ana").closest("tr") as HTMLElement;
     const buttons = within(row).getAllByRole("button");
+
     await userEvent.click(buttons[2]);
 
     const confirm = await screen.findByRole("button", { name: /Sim/i });
