@@ -37,7 +37,7 @@ jest.mock("antd", () => {
       onChange={(e) => onChange?.(e.target.value)}
       {...rest}
     >
-      {React.Children.map(children as any, (child: any) => child)}
+      {React.Children.map(children, (child: any) => child)}
     </select>
   );
   SelectMock.Option = ({ value, children }: any) => (

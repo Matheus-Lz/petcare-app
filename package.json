@@ -27,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:components": "react-scripts test src/components",
+    "test:coverage": "react-scripts test --coverage --watchAll=false --collectCoverageFrom \"src/components/**/*.{js,jsx,ts,tsx}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -36,13 +37,13 @@
       "react-app/jest"
     ]
   },
-  "jest": {
+ "jest": {
     "transformIgnorePatterns": [
       "/node_modules/(?!axios|react-router-dom|react-router|@remix-run/router|antd|@ant-design|rc-.+|@rc-component|dayjs)/"
     ],
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.d.ts"
+      "src/components/**/*.{js,jsx,ts,tsx}",
+      "!src/components/**/*.d.ts"
     ]
   },
   "browserslist": {

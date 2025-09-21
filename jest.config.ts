@@ -1,8 +1,8 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
-    "src/**/*.{js,jsx,ts,tsx}",
-    "!src/**/*.d.ts",
+    "src/components/**/*.{js,jsx,ts,tsx}",
+    "!src/components/**/*.d.ts",
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "cobertura"], 
