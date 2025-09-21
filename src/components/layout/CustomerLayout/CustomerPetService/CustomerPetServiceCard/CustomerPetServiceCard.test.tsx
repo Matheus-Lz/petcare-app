@@ -19,7 +19,7 @@ jest.mock("../CustomerScheduleForm/CustomerScheduleForm", () => ({
   __esModule: true,
   default: ({ onSuccess }: any) => (
     <div data-testid="schedule-form">
-      form
+      <span>form</span>
       <button onClick={onSuccess}>ok</button>
     </div>
   ),

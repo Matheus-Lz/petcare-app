@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Card,
   Button,
@@ -48,7 +48,7 @@ const WorkingPeriodScheduler: React.FC = () => {
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchPeriods = async () => {
+  const fetchPeriods = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getAllWorkingPeriods();
@@ -62,15 +62,17 @@ const WorkingPeriodScheduler: React.FC = () => {
       );
       setWorkingPeriods(grouped);
     } catch (error) {
+      console.error("Erro ao buscar períodos:", error);
       message.error("Erro ao buscar períodos");
+      throw error;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchPeriods();
-  }, []);
+    fetchPeriods().catch(() => {});
+  }, [fetchPeriods]);
 
   const openModal = (day: string) => {
     setSelectedDay(day);
@@ -99,8 +101,9 @@ const WorkingPeriodScheduler: React.FC = () => {
       await createWorkingPeriod(dto);
       message.success("Período criado com sucesso");
       setModalVisible(false);
-      fetchPeriods();
+      await fetchPeriods().catch(() => {});
     } catch (error) {
+      console.error("Erro ao criar período:", error);
       message.error("Erro ao criar período");
     }
   };
@@ -109,8 +112,9 @@ const WorkingPeriodScheduler: React.FC = () => {
     try {
       await deleteWorkingPeriod(id);
       message.success("Período deletado com sucesso");
-      fetchPeriods();
+      await fetchPeriods().catch(() => {});
     } catch (error) {
+      console.error("Erro ao deletar período:", error);
       message.error("Erro ao deletar período");
     }
   };

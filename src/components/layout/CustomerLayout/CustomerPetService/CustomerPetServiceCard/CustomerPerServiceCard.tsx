@@ -26,7 +26,7 @@ const CustomerPetServiceCard: React.FC<Props> = ({ service }) => {
       <Card
         hoverable
         className={styles.card}
-        bodyStyle={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
+        styles={{ body: { display: "flex", flexDirection: "column", flexGrow: 1 } }}
       >
         <div className={styles.contentWrapper}>
           <Title level={4} className={styles.title}>
@@ -59,7 +59,7 @@ const CustomerPetServiceCard: React.FC<Props> = ({ service }) => {
 
       <Modal
         title="Agendar Serviço"
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
         destroyOnClose
