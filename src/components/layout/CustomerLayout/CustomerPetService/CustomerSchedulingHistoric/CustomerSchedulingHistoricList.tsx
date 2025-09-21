@@ -31,9 +31,7 @@ const { Option } = Select;
 const PAGE_SIZE = 10;
 
 const CustomerSchedulingHistoricList: React.FC = () => {
-  const [schedulings, setSchedulings] = useState<SchedulingDetailResponse[]>(
-    []
-  );
+  const [schedulings, setSchedulings] = useState<SchedulingDetailResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -49,10 +47,10 @@ const CustomerSchedulingHistoricList: React.FC = () => {
     fetchSchedulings(page);
   }, [page]);
 
-  const fetchSchedulings = async (page: number) => {
+  const fetchSchedulings = async (pageNum: number) => {
     try {
       setLoading(true);
-      const data = await getUserSchedulings(page - 1, PAGE_SIZE);
+      const data = await getUserSchedulings(pageNum - 1, PAGE_SIZE);
       setSchedulings(data.content || []);
       setTotal(data.totalElements || 0);
     } finally {
@@ -72,8 +70,7 @@ const CustomerSchedulingHistoricList: React.FC = () => {
       scheduling.petService.id,
       date.format("YYYY-MM-DD")
     );
-    setAvailableTimes(times);
-
+    setAvailableTimes(times || []);
     setEditModalVisible(true);
   };
 
@@ -94,7 +91,7 @@ const CustomerSchedulingHistoricList: React.FC = () => {
       message.success("Agendamento atualizado!");
       setEditModalVisible(false);
       fetchSchedulings(page);
-    } catch (err) {
+    } catch {
       message.error("Erro ao atualizar agendamento");
     }
   };
@@ -138,6 +135,7 @@ const CustomerSchedulingHistoricList: React.FC = () => {
                     <div className={styles.actionButtons}>
                       <Tooltip title="Editar">
                         <Button
+                          aria-label="edit"
                           size="small"
                           icon={<EditOutlined />}
                           onClick={() => openEditModal(s)}
@@ -152,6 +150,7 @@ const CustomerSchedulingHistoricList: React.FC = () => {
                       >
                         <Tooltip title="Excluir">
                           <Button
+                            aria-label="delete"
                             size="small"
                             icon={<DeleteOutlined />}
                             danger
@@ -228,7 +227,7 @@ const CustomerSchedulingHistoricList: React.FC = () => {
                     serviceId,
                     date.format("YYYY-MM-DD")
                   );
-                  setAvailableTimes(times);
+                  setAvailableTimes(times || []);
                 }
               }}
               style={{ width: "100%" }}
@@ -241,8 +240,8 @@ const CustomerSchedulingHistoricList: React.FC = () => {
             name="time"
             rules={[{ required: true, message: "Selecione o horário" }]}
           >
-            <Select>
-              {availableTimes.map((t) => (
+            <Select aria-label="time">
+              {(availableTimes || []).map((t) => (
                 <Option key={t} value={t}>
                   {dayjs(t, "HH:mm:ss").format("HH:mm")}
                 </Option>
