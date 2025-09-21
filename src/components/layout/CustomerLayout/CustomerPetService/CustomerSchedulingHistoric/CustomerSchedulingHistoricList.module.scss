@@ -91,7 +91,7 @@
 }
 
 .cardInfo span,
-.cardInfo Text {
+.cardInfo :global(.ant-typography) {
   color: #595959;
   font-size: 14px;
 }
