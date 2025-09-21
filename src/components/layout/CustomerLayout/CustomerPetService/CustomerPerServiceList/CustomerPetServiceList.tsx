@@ -29,43 +29,37 @@ const CustomerPetServiceList: React.FC = () => {
     loadServices(currentPage);
   }, [currentPage]);
 
-  return (
-    <>
-      {loading ? (
-        <Spin size="large" className={styles.spinContainer} />
-      ) : services.length === 0 ? (
-        <Empty description="Nenhum serviço cadastrado" />
-      ) : (
-        <>
-          <Row gutter={[32, 32]} className={styles.container}>
-            {services.map((service) => (
-              <Col
-                key={service.id}
-                xs={24}
-                sm={12}
-                md={8}
-                lg={6}
-                xl={6}
-                xxl={4}
-              >
-                <CustomerPetServiceCard service={service} />
-              </Col>
-            ))}
-          </Row>
+  const renderContent = () => {
+    if (loading) {
+      return <Spin size="large" className={styles.spinContainer} />;
+    }
+    if (services.length === 0) {
+      return <Empty description="Nenhum serviço cadastrado" />;
+    }
+    return (
+      <>
+        <Row gutter={[32, 32]} className={styles.container}>
+          {services.map((service) => (
+            <Col key={service.id} xs={24} sm={12} md={8} lg={6} xl={6} xxl={4}>
+              <CustomerPetServiceCard service={service} />
+            </Col>
+          ))}
+        </Row>
 
-          <div className={styles.paginationContainer}>
-            <Pagination
-              current={currentPage}
-              pageSize={pageSize}
-              total={totalItems}
-              onChange={(page) => setCurrentPage(page)}
-              showSizeChanger={false}
-            />
-          </div>
-        </>
-      )}
-    </>
-  );
+        <div className={styles.paginationContainer}>
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={totalItems}
+            onChange={setCurrentPage}
+            showSizeChanger={false}
+          />
+        </div>
+      </>
+    );
+  };
+
+  return <>{renderContent()}</>;
 };
 
 export default CustomerPetServiceList;

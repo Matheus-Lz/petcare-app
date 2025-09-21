@@ -25,7 +25,9 @@ api.interceptors.response.use(
       window.location.href = '/auth';
     }
 
-    return Promise.reject(error);
+     return Promise.reject(
+      error instanceof Error ? error : new Error(error.message || "Unknown error")
+    );
   }
 );
 

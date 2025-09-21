@@ -40,7 +40,9 @@ const { Option } = Select;
 const { Title, Text } = Typography;
 
 export const SchedulingByDateTable: React.FC = () => {
-  const [schedulings, setSchedulings] = useState<SchedulingDetailResponse[]>([]);
+  const [schedulings, setSchedulings] = useState<SchedulingDetailResponse[]>(
+    []
+  );
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
@@ -48,10 +50,13 @@ export const SchedulingByDateTable: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [assignModalVisible, setAssignModalVisible] = useState(false);
 
-  const [selectedScheduling, setSelectedScheduling] = useState<SchedulingDetailResponse | null>(null);
+  const [selectedScheduling, setSelectedScheduling] =
+    useState<SchedulingDetailResponse | null>(null);
   const [newStatus, setNewStatus] = useState<SchedulingStatus | null>(null);
   const [employeeList, setEmployeeList] = useState<EmployeeResponse[]>([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null
+  );
 
   const loadSchedulings = async (date: Dayjs) => {
     setLoading(true);
@@ -76,7 +81,7 @@ export const SchedulingByDateTable: React.FC = () => {
   };
 
   useEffect(() => {
-    if (selectedDate && selectedDate.isValid()) {
+    if (selectedDate?.isValid()) {
       loadSchedulings(selectedDate);
     }
   }, [selectedDate]);
@@ -130,7 +135,8 @@ export const SchedulingByDateTable: React.FC = () => {
       key: "schedulingHour",
       render: (text) => dayjs(text).format("DD/MM/YYYY HH:mm"),
       sorter: (a, b) =>
-        new Date(a.schedulingHour).getTime() - new Date(b.schedulingHour).getTime(),
+        new Date(a.schedulingHour).getTime() -
+        new Date(b.schedulingHour).getTime(),
     },
     {
       title: "Serviço",
@@ -142,7 +148,11 @@ export const SchedulingByDateTable: React.FC = () => {
       dataIndex: ["employee", "user", "name"],
       key: "employee",
       render: (text) =>
-        text ? <Tag color="blue">{text}</Tag> : <Tag color="red">Sem responsável</Tag>,
+        text ? (
+          <Tag color="blue">{text}</Tag>
+        ) : (
+          <Tag color="red">Sem responsável</Tag>
+        ),
     },
     {
       title: "Status",
@@ -153,10 +163,12 @@ export const SchedulingByDateTable: React.FC = () => {
           {SchedulingStatusDescription[status]}
         </Tag>
       ),
-      filters: Object.entries(SchedulingStatusDescription).map(([key, desc]) => ({
-        text: desc,
-        value: key,
-      })),
+      filters: Object.entries(SchedulingStatusDescription).map(
+        ([key, desc]) => ({
+          text: desc,
+          value: key,
+        })
+      ),
       onFilter: (value, record) => record.status === value,
     },
     {
@@ -213,7 +225,7 @@ export const SchedulingByDateTable: React.FC = () => {
       <DatePicker
         defaultValue={dayjs()}
         onChange={(date) => {
-          if (date && date.isValid()) {
+          if (date?.isValid()) {
             setSelectedDate(date);
           }
         }}
@@ -241,7 +253,9 @@ export const SchedulingByDateTable: React.FC = () => {
             <Divider />
             <p>
               <Text strong>Horário:</Text>{" "}
-              {dayjs(selectedScheduling.schedulingHour).format("DD/MM/YYYY HH:mm")}
+              {dayjs(selectedScheduling.schedulingHour).format(
+                "DD/MM/YYYY HH:mm"
+              )}
             </p>
             <p>
               <Text strong>Serviço:</Text> {selectedScheduling.petService.name}

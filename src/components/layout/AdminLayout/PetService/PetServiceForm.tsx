@@ -46,15 +46,15 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({
     onRefresh();
   };
 
+  const getModalTitle = (readOnly: boolean, service?: any) => {
+    if (readOnly) return "Visualizar Serviço";
+    if (service) return "Editar Serviço";
+    return "Novo Serviço";
+  };
+
   return (
     <Modal
-      title={
-        readOnly
-          ? "Visualizar Serviço"
-          : service
-          ? "Editar Serviço"
-          : "Novo Serviço"
-      }
+      title={getModalTitle(readOnly, service)}
       open={visible}
       onCancel={onClose}
       onOk={() => !readOnly && form.submit()}

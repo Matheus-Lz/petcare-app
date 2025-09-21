@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
-import { createEmployee, updateEmployee } from "../../../../../api/Employee/Employee";
+import {
+  createEmployee,
+  updateEmployee,
+} from "../../../../../api/Employee/Employee";
 import { EmployeeResponse } from "../../../../../api/Employee/type/EmployeeResponse";
 import { getAllPetServices } from "../../../../../api/PetService/PetService";
 import { CreateEmployeeRequest } from "../../../../../api/Employee/type/CreateEmployeeRequest";
@@ -23,7 +26,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   readOnly = false,
 }) => {
   const [form] = Form.useForm();
-  const [servicesOptions, setServicesOptions] = useState<{ id: string; name: string }[]>([]);
+  const [servicesOptions, setServicesOptions] = useState<
+    { id: string; name: string }[]
+  >([]);
   const [loadingServices, setLoadingServices] = useState(false);
 
   useEffect(() => {
@@ -31,7 +36,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       setLoadingServices(true);
       try {
         const data = await getAllPetServices(0, 100);
-        setServicesOptions(data.content.map((s: any) => ({ id: s.id, name: s.name })));
+        setServicesOptions(
+          data.content.map((s: any) => ({ id: s.id, name: s.name }))
+        );
       } finally {
         setLoadingServices(false);
       }
@@ -74,11 +81,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
     onRefresh();
   };
 
+  const getModalTitle = () => {
+    if (readOnly) return "Visualizar Funcionário";
+    if (employee) return "Editar Funcionário";
+    return "Novo Funcionário";
+  };
+
   return (
     <Modal
-      title={
-        readOnly ? "Visualizar Funcionário" : employee ? "Editar Funcionário" : "Novo Funcionário"
-      }
+      title={getModalTitle()}
       open={visible}
       onCancel={onClose}
       onOk={() => !readOnly && form.submit()}
@@ -144,12 +155,18 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
         <Form.Item
           label="Serviços"
           name="serviceIds"
-          rules={[{ required: true, message: "Selecione pelo menos um serviço" }]}
+          rules={[
+            { required: true, message: "Selecione pelo menos um serviço" },
+          ]}
         >
           {loadingServices ? (
             <Spin />
           ) : (
-            <Select mode="multiple" placeholder="Selecione serviços" disabled={readOnly}>
+            <Select
+              mode="multiple"
+              placeholder="Selecione serviços"
+              disabled={readOnly}
+            >
               {servicesOptions.map((service) => (
                 <Option key={service.id} value={service.id}>
                   {service.name}
