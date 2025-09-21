@@ -14,7 +14,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import {
-  getUserById,
+  getCurrentUser,
   updateUser,
   loginUser,
 } from "../../../../api/user/UserService";
@@ -39,7 +39,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (open) {
-      getUserById(userId)
+      getCurrentUser()
         .then((data: any) => {
           form.setFieldsValue({
             name: data.name,

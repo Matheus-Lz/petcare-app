@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
-import { createEmployee, updateEmployee } from "../../../../api/Employee/Employee";
-import { EmployeeResponse } from "../../../../api/Employee/type/EmployeeResponse";
-import { getAllPetServices } from "../../../../api/PetService/PetService";
-import { CreateEmployeeRequest } from "../../../../api/Employee/type/CreateEmployeeRequest";
+import { createEmployee, updateEmployee } from "../../../../../api/Employee/Employee";
+import { EmployeeResponse } from "../../../../../api/Employee/type/EmployeeResponse";
+import { getAllPetServices } from "../../../../../api/PetService/PetService";
+import { CreateEmployeeRequest } from "../../../../../api/Employee/type/CreateEmployeeRequest";
 
 const { Option } = Select;
 
@@ -31,7 +31,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       setLoadingServices(true);
       try {
         const data = await getAllPetServices(0, 100);
-        setServicesOptions(data.content.map((s) => ({ id: s.id, name: s.name })));
+        setServicesOptions(data.content.map((s: any) => ({ id: s.id, name: s.name })));
       } finally {
         setLoadingServices(false);
       }
@@ -77,20 +77,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   return (
     <Modal
       title={
-        readOnly
-          ? "Visualizar Funcionário"
-          : employee
-          ? "Editar Funcionário"
-          : "Novo Funcionário"
+        readOnly ? "Visualizar Funcionário" : employee ? "Editar Funcionário" : "Novo Funcionário"
       }
       open={visible}
       onCancel={onClose}
       onOk={() => !readOnly && form.submit()}
-      footer={
-        readOnly
-          ? null
-          : undefined
-      }
+      footer={readOnly ? null : undefined}
     >
       <Form form={form} layout="vertical" onFinish={handleFinish}>
         {!employee && (
@@ -98,21 +90,30 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
             <Form.Item
               label="Email"
               name="email"
-              rules={[{ required: true, message: "Email é obrigatório" }, { type: "email", message: "Email inválido" }]}
+              rules={[
+                { required: true, message: "Email é obrigatório" },
+                { type: "email", message: "Email inválido" },
+              ]}
             >
               <Input disabled={readOnly} />
             </Form.Item>
             <Form.Item
               label="Senha"
               name="password"
-              rules={[{ required: true, message: "Senha é obrigatória" }, { min: 6, message: "Mínimo 6 caracteres" }]}
+              rules={[
+                { required: true, message: "Senha é obrigatória" },
+                { min: 6, message: "Mínimo 6 caracteres" },
+              ]}
             >
               <Input.Password disabled={readOnly} />
             </Form.Item>
             <Form.Item
               label="CPF/CNPJ"
               name="cpfCnpj"
-              rules={[{ required: true, message: "CPF/CNPJ é obrigatório" }, { max: 14, message: "Máximo 14 caracteres" }]}
+              rules={[
+                { required: true, message: "CPF/CNPJ é obrigatório" },
+                { max: 14, message: "Máximo 14 caracteres" },
+              ]}
             >
               <Input disabled={readOnly} />
             </Form.Item>

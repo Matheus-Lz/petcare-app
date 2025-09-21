@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import NotFound from "./NotFound";
+import NotFound from "../NotFound/NotFound";
 
 interface ProtectedRouteProps {
   allowedRoles: string[];

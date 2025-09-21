@@ -1,42 +1,36 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Button, Space, Popconfirm, Tag, Empty, Tooltip } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import {
-  deleteEmployee,
-  getAllEmployees,
-} from "../../../../api/Employee/Employee";
-import EmployeeForm from "./EmployeeForm";
+import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { deleteEmployee, getAllEmployees } from "../../../../../api/Employee/Employee";
+import EmployeeForm from "../EmployeeForm/EmployeeForm";
 import {
   EmployeeResponse,
   PetServiceEmployeeResponse,
-} from "../../../../api/Employee/type/EmployeeResponse";
+} from "../../../../../api/Employee/type/EmployeeResponse";
 
 const EmployeeTable: React.FC = () => {
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedEmployee, setSelectedEmployee] =
-    useState<EmployeeResponse | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponse | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  const loadData = useCallback(async (page: number = currentPage) => {
-    setLoading(true);
-    try {
-      const data = await getAllEmployees(page - 1, pageSize);
-      setEmployees(data.content);
-      setTotal(data.totalElements);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
+  const loadData = useCallback(
+    async (page: number = currentPage) => {
+      setLoading(true);
+      try {
+        const data = await getAllEmployees(page - 1, pageSize);
+        setEmployees(data.content);
+        setTotal(data.totalElements);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage]
+  );
 
   useEffect(() => {
     loadData();
@@ -64,40 +58,32 @@ const EmployeeTable: React.FC = () => {
 
       <Table
         rowKey="id"
-        locale={{
-          emptyText: <Empty description="Nenhum funcionário cadastrado" />,
-        }}
+        locale={{ emptyText: <Empty description="Nenhum funcionário cadastrado" /> }}
         dataSource={employees}
         loading={loading}
         pagination={{
           current: currentPage,
-          pageSize: pageSize,
-          total: total,
+          pageSize,
+          total,
           onChange: (page) => setCurrentPage(page),
         }}
         columns={[
           {
             title: "Nome",
             dataIndex: ["user", "name"],
-            render: (_: any, record: EmployeeResponse) =>
-              record.user?.name || "-",
+            render: (_: any, record: EmployeeResponse) => record.user?.name || "-",
           },
           {
             title: "Email",
             dataIndex: ["user", "email"],
-            render: (_: any, record: EmployeeResponse) =>
-              record.user?.email || "-",
+            render: (_: any, record: EmployeeResponse) => record.user?.email || "-",
           },
           {
             title: "Serviços",
             dataIndex: "petServiceList",
             render: (petServiceList: PetServiceEmployeeResponse[]) =>
               petServiceList.map((petService) => (
-                <Tag
-                  key={petService.id}
-                  color="blue"
-                  style={{ marginBottom: 4 }}
-                >
+                <Tag key={petService.id} color="blue" style={{ marginBottom: 4 }}>
                   {petService.name}
                 </Tag>
               )),

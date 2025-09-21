@@ -14,8 +14,8 @@ export const loginUser = async (data: LoginRequest): Promise<AuthResponse> => {
   return response.data;
 };
 
-export const getUserById = async (id: string): Promise<UserResponse> => {
-  const response = await api.get(`/user/${id}`);
+export const getCurrentUser = async (): Promise<UserResponse> => {
+  const response = await api.get(`/user/current-user`);
   return response.data;
 };
 
