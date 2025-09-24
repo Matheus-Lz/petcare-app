@@ -1,6 +1,6 @@
 import React from "react";
 import AdminLayout from "../components/layout/AdminLayout/AdminLayout";
-import PetServiceTable from "../components/layout/AdminLayout/PetService/PetServiceTable";
+import PetServiceTable from "../components/layout/AdminLayout/PetService/PetServiceTable/PetServiceTable";
 
 const PetServicesPage: React.FC = () => {
   return (

@@ -9,9 +9,9 @@ import {
 import {
   deletePetService,
   getAllPetServices,
-} from "../../../../api/PetService/PetService";
-import PetServiceForm from "./PetServiceForm";
-import { PetServiceResponse } from "../../../../api/PetService/types/PetServiceResponse";
+} from "../../../../../api/PetService/PetService";
+import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
+import PetServiceForm from "../PetServiceForm/PetServiceForm";
 
 const PetServiceTable: React.FC = () => {
   const [services, setServices] = useState<PetServiceResponse[]>([]);

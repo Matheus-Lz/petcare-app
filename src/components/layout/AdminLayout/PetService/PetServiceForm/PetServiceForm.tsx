@@ -3,9 +3,9 @@ import { Modal, Form, Input, InputNumber } from "antd";
 import {
   createPetService,
   updatePetService,
-} from "../../../../api/PetService/PetService";
-import { PetServiceResponse } from "../../../../api/PetService/types/PetServiceResponse";
-import { CreatePetServiceRequest } from "../../../../api/PetService/types/CreatePetServiceRequest";
+} from "../../../../../api/PetService/PetService";
+import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
+import { CreatePetServiceRequest } from "../../../../../api/PetService/types/CreatePetServiceRequest";
 
 interface PetServiceFormProps {
   visible: boolean;

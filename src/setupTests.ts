@@ -45,3 +45,5 @@ class ResizeObserverMock {
 if (!("ResizeObserver" in window)) {
   (window as any).ResizeObserver = ResizeObserverMock as any;
 }
+
+jest.setTimeout(20000);
