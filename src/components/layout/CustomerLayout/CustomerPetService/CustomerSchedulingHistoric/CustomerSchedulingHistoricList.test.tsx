@@ -83,12 +83,17 @@ describe("CustomerSchedulingHistoricList", () => {
   });
 
   test("lista vazia exibe Empty", async () => {
-    mockGetUserSchedulings.mockResolvedValueOnce({ content: [], totalElements: 0 });
+    mockGetUserSchedulings.mockResolvedValueOnce({
+      content: [],
+      totalElements: 0,
+    });
 
     render(<CustomerSchedulingHistoricList />);
 
     await waitFor(() =>
-      expect(screen.getByText("Nenhum agendamento encontrado")).toBeInTheDocument()
+      expect(
+        screen.getByText("Nenhum agendamento encontrado")
+      ).toBeInTheDocument()
     );
     expect(mockGetUserSchedulings).toHaveBeenCalledWith(0, 10);
   });
@@ -101,25 +106,58 @@ describe("CustomerSchedulingHistoricList", () => {
     await screen.findByText("Banho");
     const card = screen.getByText("Banho").closest(".ant-card") as HTMLElement;
 
-    expect(within(card).getByRole("button", { name: /edit/i })).toBeInTheDocument();
-    expect(within(card).getByRole("button", { name: /delete/i })).toBeInTheDocument();
+    expect(
+      within(card).getByRole("button", { name: /edit/i })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole("button", { name: /delete/i })
+    ).toBeInTheDocument();
   });
 
   test("excluir: confirma e recarrega", async () => {
     mockGetUserSchedulings.mockResolvedValueOnce(page1);
     mockDeleteScheduling.mockResolvedValueOnce({});
-    mockGetUserSchedulings.mockResolvedValueOnce({ content: [], totalElements: 0 });
+    mockGetUserSchedulings.mockResolvedValueOnce({
+      content: [],
+      totalElements: 0,
+    });
 
     render(<CustomerSchedulingHistoricList />);
 
     await screen.findByText("Banho");
     const card = screen.getByText("Banho").closest(".ant-card") as HTMLElement;
 
-    await userEvent.click(within(card).getByRole("button", { name: /delete/i }));
+    await userEvent.click(
+      within(card).getByRole("button", { name: /delete/i })
+    );
 
-    await waitFor(() => expect(mockDeleteScheduling).toHaveBeenCalledWith("sch1"));
     await waitFor(() =>
-      expect(screen.getByText("Nenhum agendamento encontrado")).toBeInTheDocument()
+      expect(mockDeleteScheduling).toHaveBeenCalledWith("sch1")
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByText("Nenhum agendamento encontrado")
+      ).toBeInTheDocument()
+    );
+  });
+
+  test("mostra erro ao falhar atualização", async () => {
+    mockGetUserSchedulings.mockResolvedValueOnce(page1);
+    mockGetAvailableTimes.mockResolvedValueOnce(["10:00:00"]);
+    mockUpdateScheduling.mockRejectedValueOnce(new Error("fail"));
+
+    render(<CustomerSchedulingHistoricList />);
+
+    await screen.findByText("Banho");
+    await userEvent.click(screen.getByRole("button", { name: /edit/i }));
+    await screen.findByText("Editar Agendamento");
+
+    await userEvent.click(screen.getByRole("button", { name: "Salvar" }));
+
+    await waitFor(() =>
+      expect(require("antd").message.error).toHaveBeenCalledWith(
+        "Erro ao atualizar agendamento"
+      )
     );
   });
 });
