@@ -44,9 +44,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const upstream = await fetch(url, { method: req.method, headers, body, redirect: 'manual' });
     upstream.headers.forEach((v, k) => { if (k.toLowerCase() !== 'content-encoding') res.setHeader(k, v); });
-    const buf = Buffer.from(await upstream.arrayBuffer());
-    res.status(upstream.status).send(buf);
+    const text = await upstream.text();
+    res.status(upstream.status).send(text);
   } catch (e: any) {
-    res.status(502).json({ error: 'Bad Gateway', detail: e?.message ?? String(e) });
+    res.status(502).json({ proxy: 'fetch_failed', url, method: req.method, message: e?.message ?? String(e) });
   }
 }
