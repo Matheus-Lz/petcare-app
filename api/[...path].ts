@@ -9,26 +9,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const base = process.env.EC2_API_BASE;
   if (!base) return res.status(500).send('EC2_API_BASE environment variable is not set.');
 
-  const segs = (req.query.path as string[] | undefined) ?? [];
+  const qp = (req.query as any).path;
+  const segs = Array.isArray(qp) ? qp : (qp ? [String(qp)] : []);
   const path = segs.join('/');
 
-  const params = new URLSearchParams();
+  const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(req.query)) {
     if (k === 'path') continue;
-    if (Array.isArray(v)) v.forEach((vv) => params.append(k, String(vv)));
-    else if (v != null) params.append(k, String(v));
+    if (Array.isArray(v)) v.forEach((vv) => sp.append(k, String(vv)));
+    else if (v != null) sp.append(k, String(v));
   }
 
   const url =
     base.replace(/\/+$/, '') +
     '/' +
     path.replace(/^\/+/, '') +
-    (params.toString() ? `?${params.toString()}` : '');
+    (sp.toString() ? `?${sp.toString()}` : '');
 
   const headers: Record<string, string> = {};
-  for (const [k, v] of Object.entries(req.headers)) {
-    if (typeof v === 'string') headers[k] = v;
-  }
+  for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers[k] = v;
   delete headers.host;
   delete headers['content-length'];
   delete headers['accept-encoding'];
@@ -44,12 +43,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const upstream = await fetch(url, { method: req.method, headers, body, redirect: 'manual' });
-    upstream.headers.forEach((v, k) => {
-      if (k.toLowerCase() !== 'content-encoding') res.setHeader(k, v);
-    });
+    upstream.headers.forEach((v, k) => { if (k.toLowerCase() !== 'content-encoding') res.setHeader(k, v); });
     const buf = Buffer.from(await upstream.arrayBuffer());
     res.status(upstream.status).send(buf);
-  } catch (e) {
-    res.status(502).send('Bad Gateway');
+  } catch (e: any) {
+    res.status(502).json({ error: 'Bad Gateway', detail: e?.message ?? String(e) });
   }
 }
