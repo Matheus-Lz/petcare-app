@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+const nodeFetch = require('node-fetch');
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -16,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(req.query)) {
     if (k === 'path') continue;
-    if (Array.isArray(v)) v.forEach((vv) => sp.append(k, String(vv)));
+    if (Array.isArray(v)) v.forEach((vv: string) => sp.append(k, String(vv)));
     else if (v != null) sp.append(k, String(v));
   }
 
@@ -42,8 +43,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const upstream = await fetch(url, { method: req.method, headers, body, redirect: 'manual' });
-    upstream.headers.forEach((v, k) => { if (k.toLowerCase() !== 'content-encoding') res.setHeader(k, v); });
+    const upstream = await nodeFetch(url, { method: req.method, headers, body, redirect: 'manual' });
+    upstream.headers.forEach((v: string, k: string) => { if (k.toLowerCase() !== 'content-encoding') res.setHeader(k, v); });
     const text = await upstream.text();
     res.status(upstream.status).send(text);
   } catch (e: any) {
