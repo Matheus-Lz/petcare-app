@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
 import InputMask from "react-input-mask";
+import { notifySuccess, notifyError } from "../../../../../utils/notifications";
 import {
   createEmployee,
   updateEmployee,
@@ -75,6 +76,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   const handleFinish = async (values: any) => {
     if (employee) {
       await updateEmployee(employee.id, { serviceIds: values.serviceIds });
+      notifySuccess("Funcionário atualizado com sucesso!");
     } else {
       const payload: CreateEmployeeRequest = {
         user: {
@@ -86,6 +88,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
         serviceIds: values.serviceIds,
       };
       await createEmployee(payload);
+      notifySuccess("Funcionário criado com sucesso!");
     }
 
     onClose();
@@ -132,9 +135,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
             <Form.Item
               label="CPF/CNPJ"
               name="cpfCnpj"
-              rules={[
-                { required: true, message: "CPF/CNPJ é obrigatório" },
-              ]}
+              rules={[{ required: true, message: "CPF/CNPJ é obrigatório" }]}
             >
               <InputMask
                 mask={cpfCnpjMask}

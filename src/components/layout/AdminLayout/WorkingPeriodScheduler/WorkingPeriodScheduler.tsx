@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Card,
   Button,
   TimePicker,
   Modal,
-  message,
   Row,
   Col,
   Typography,
+  message,
 } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
@@ -19,6 +19,7 @@ import {
   deleteWorkingPeriod,
 } from "../../../../api/WorkingPeriod/WorkingPeriod";
 import { WorkingPeriodRequest } from "../../../../api/WorkingPeriod/types/WorkingPeriodRequest";
+import { notifyError, notifySuccess } from "../../../../utils/notifications";
 
 const { Title, Text } = Typography;
 
@@ -63,7 +64,7 @@ const WorkingPeriodScheduler: React.FC = () => {
       setWorkingPeriods(grouped);
     } catch (error) {
       console.error("Erro ao buscar períodos:", error);
-      message.error("Erro ao buscar períodos");
+      notifyError("Erro ao buscar períodos");
       throw error;
     } finally {
       setLoading(false);
@@ -83,7 +84,7 @@ const WorkingPeriodScheduler: React.FC = () => {
 
   const handleAddPeriod = async () => {
     if (!startTime || !endTime || !selectedDay) {
-      message.warning("Por favor, preencha todos os campos");
+      notifyError("Por favor, preencha todos os campos");
       return;
     }
     if (endTime.isBefore(startTime)) {
@@ -99,23 +100,23 @@ const WorkingPeriodScheduler: React.FC = () => {
 
     try {
       await createWorkingPeriod(dto);
-      message.success("Período criado com sucesso");
+      notifySuccess("Período criado com sucesso");
       setModalVisible(false);
       await fetchPeriods().catch(() => {});
     } catch (error) {
       console.error("Erro ao criar período:", error);
-      message.error("Erro ao criar período");
+      notifyError("Erro ao criar período");
     }
   };
 
   const handleDeletePeriod = async (id: string) => {
     try {
       await deleteWorkingPeriod(id);
-      message.success("Período deletado com sucesso");
+      notifySuccess("Período deletado com sucesso");
       await fetchPeriods().catch(() => {});
     } catch (error) {
       console.error("Erro ao deletar período:", error);
-      message.error("Erro ao deletar período");
+      notifyError("Erro ao deletar período");
     }
   };
 

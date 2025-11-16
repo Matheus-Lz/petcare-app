@@ -6,6 +6,7 @@ import {
 } from "../../../../../api/PetService/PetService";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
 import { CreatePetServiceRequest } from "../../../../../api/PetService/types/CreatePetServiceRequest";
+import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 
 interface PetServiceFormProps {
   visible: boolean;
@@ -38,8 +39,10 @@ const PetServiceForm: React.FC<PetServiceFormProps> = ({
     if (readOnly) return;
     if (service) {
       await updatePetService(service.id, values);
+      notifySuccess("Serviço atualizado com sucesso!");
     } else {
       await createPetService(values);
+      notifySuccess("Serviço criado com sucesso!");
     }
     form.resetFields();
     onClose();

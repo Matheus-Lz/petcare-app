@@ -1,17 +1,27 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Button, Space, Popconfirm, Tag, Empty, Tooltip } from "antd";
-import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
-import { deleteEmployee, getAllEmployees } from "../../../../../api/Employee/Employee";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import {
+  deleteEmployee,
+  getAllEmployees,
+} from "../../../../../api/Employee/Employee";
 import EmployeeForm from "../EmployeeForm/EmployeeForm";
 import {
   EmployeeResponse,
   PetServiceEmployeeResponse,
 } from "../../../../../api/Employee/type/EmployeeResponse";
+import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 
 const EmployeeTable: React.FC = () => {
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponse | null>(null);
+  const [selectedEmployee, setSelectedEmployee] =
+    useState<EmployeeResponse | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
@@ -38,6 +48,7 @@ const EmployeeTable: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     await deleteEmployee(id);
+    notifySuccess("Funcionário excluído com sucesso!");
     loadData(1);
   };
 
@@ -58,7 +69,9 @@ const EmployeeTable: React.FC = () => {
 
       <Table
         rowKey="id"
-        locale={{ emptyText: <Empty description="Nenhum funcionário cadastrado" /> }}
+        locale={{
+          emptyText: <Empty description="Nenhum funcionário cadastrado" />,
+        }}
         dataSource={employees}
         loading={loading}
         pagination={{
@@ -71,19 +84,25 @@ const EmployeeTable: React.FC = () => {
           {
             title: "Nome",
             dataIndex: ["user", "name"],
-            render: (_: any, record: EmployeeResponse) => record.user?.name || "-",
+            render: (_: any, record: EmployeeResponse) =>
+              record.user?.name || "-",
           },
           {
             title: "Email",
             dataIndex: ["user", "email"],
-            render: (_: any, record: EmployeeResponse) => record.user?.email || "-",
+            render: (_: any, record: EmployeeResponse) =>
+              record.user?.email || "-",
           },
           {
             title: "Serviços",
             dataIndex: "petServiceList",
             render: (petServiceList: PetServiceEmployeeResponse[]) =>
               petServiceList.map((petService) => (
-                <Tag key={petService.id} color="blue" style={{ marginBottom: 4 }}>
+                <Tag
+                  key={petService.id}
+                  color="blue"
+                  style={{ marginBottom: 4 }}
+                >
                   {petService.name}
                 </Tag>
               )),

@@ -42,7 +42,7 @@ const Auth: React.FC = () => {
       storage.setItem("name", name);
       storage.setItem("userId", userId);
 
-      notifySuccess("Login realizado com sucesso!");
+      notifySuccess("Bem vindo!");
 
       switch (role) {
         case "SUPER_ADMIN":
@@ -73,7 +73,7 @@ const Auth: React.FC = () => {
       };
 
       await registerUser(payload);
-      notifySuccess("Registro realizado com sucesso!");
+      notifySuccess("Usuário cadastrado com sucesso!");
       registerForm.resetFields();
       setCpfCnpjValue("");
       setActiveTab("login");

@@ -12,6 +12,9 @@ import {
 } from "../../../../../api/PetService/PetService";
 import { PetServiceResponse } from "../../../../../api/PetService/types/PetServiceResponse";
 import PetServiceForm from "../PetServiceForm/PetServiceForm";
+import {
+  notifySuccess,
+} from "../../../../../utils/notifications";
 
 const PetServiceTable: React.FC = () => {
   const [services, setServices] = useState<PetServiceResponse[]>([]);
@@ -24,16 +27,19 @@ const PetServiceTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  const loadData = useCallback(async (page: number = currentPage) => {
-    setLoading(true);
-    try {
-      const data = await getAllPetServices(page - 1, pageSize);
-      setServices(data.content);
-      setTotal(data.totalElements);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
+  const loadData = useCallback(
+    async (page: number = currentPage) => {
+      setLoading(true);
+      try {
+        const data = await getAllPetServices(page - 1, pageSize);
+        setServices(data.content);
+        setTotal(data.totalElements);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage]
+  );
 
   useEffect(() => {
     loadData();
@@ -41,6 +47,7 @@ const PetServiceTable: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     await deletePetService(id);
+    notifySuccess("Serviço excluído com sucesso!");
     loadData();
   };
 
