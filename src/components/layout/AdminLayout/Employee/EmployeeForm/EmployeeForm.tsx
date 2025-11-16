@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
 import InputMask from "react-input-mask";
-import { notifySuccess, notifyError } from "../../../../../utils/notifications";
+import { notifySuccess } from "../../../../../utils/notifications";
 import {
   createEmployee,
   updateEmployee,
@@ -36,7 +36,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
   const [cpfCnpjMask, setCpfCnpjMask] = useState("999.999.999-99");
 
   useEffect(() => {
-    const onlyDigits = cpfCnpjValue.replace(/\D/g, "");
+    const onlyDigits = cpfCnpjValue.replaceAll(/\D/g, "");
     setCpfCnpjMask(
       onlyDigits.length > 11 ? "99.999.999/9999-99" : "999.999.999-99"
     );

@@ -15,7 +15,7 @@ import {
   EmployeeResponse,
   PetServiceEmployeeResponse,
 } from "../../../../../api/Employee/type/EmployeeResponse";
-import { notifyError, notifySuccess } from "../../../../../utils/notifications";
+import { notifySuccess } from "../../../../../utils/notifications";
 
 const EmployeeTable: React.FC = () => {
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);

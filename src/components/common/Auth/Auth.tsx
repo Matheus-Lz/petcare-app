@@ -25,7 +25,7 @@ const Auth: React.FC = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const onlyDigits = cpfCnpjValue.replace(/\D/g, "");
+    const onlyDigits = cpfCnpjValue.replaceAll(/\D/g, "");
     setCpfCnpjMask(
       onlyDigits.length > 11 ? "99.999.999/9999-99" : "999.999.999-99"
     );
