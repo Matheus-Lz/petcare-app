@@ -69,7 +69,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
       const value = form.getFieldValue(field);
 
       const payload: any = {
-        [field]: field === "cpfCnpj" ? value.replace(/\D/g, "") : value,
+        [field]: field === "cpfCnpj" ? value.replaceAll(/\D/g, "") : value,
       };
 
       await updateUser(userId, payload);
@@ -135,8 +135,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
     if (!currentUser) return;
 
     const anyUser = currentUser as any;
-    const nameFromApi =
-      anyUser.name ?? anyUser.fullName ?? anyUser.nome ?? "";
+    const nameFromApi = anyUser.name ?? anyUser.fullName ?? anyUser.nome ?? "";
 
     if (field === "name") {
       setNameValue(nameFromApi);
@@ -205,17 +204,20 @@ const CustomerEditProfileModal: React.FC<Props> = ({
               }}
               disabled={editingField !== "cpfCnpj"}
             >
-              {(inputProps: any) => (
-                <Input
-                  {...inputProps}
-                  className={
-                    editingField !== "cpfCnpj"
-                      ? `${inputProps.className || ""} ant-input-disabled`
-                      : inputProps.className
-                  }
-                />
-              )}
+              {(inputProps: any) => {
+                const isEditingCpf = editingField === "cpfCnpj";
+
+                const className = [
+                  inputProps.className || "",
+                  !isEditingCpf ? "ant-input-disabled" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
+
+                return <Input {...inputProps} className={className} />;
+              }}
             </InputMask>
+
             {editingField === "cpfCnpj" ? (
               <>
                 <Button
