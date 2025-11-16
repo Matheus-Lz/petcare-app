@@ -82,7 +82,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
         user: {
           email: values.email,
           name: values.name,
-          cpfCnpj: values.cpfCnpj.replace(/\D/g, ""),
+          cpfCnpj: values.cpfCnpj.replaceAll(/\D/g, ""),
           password: values.password,
         },
         serviceIds: values.serviceIds,

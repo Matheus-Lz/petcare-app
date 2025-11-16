@@ -13,6 +13,17 @@ jest.mock("../../../../api/user/UserService", () => ({
   loginUser: (...a: any[]) => mockLogin(...a),
 }));
 
+jest.mock("react-input-mask", () => {
+  const React = require("react");
+  return (props: any) => {
+    const { children, ...rest } = props;
+    if (typeof children === "function") {
+      return children(rest);
+    }
+    return React.createElement("input", rest);
+  };
+});
+
 jest.mock("antd", () => {
   const real = jest.requireActual("antd");
   const Modal = ({ open, visible, title, onCancel, children }: any) =>
@@ -72,81 +83,40 @@ describe("CustomerEditProfileModal", () => {
     await screen.findByRole("dialog", { name: /editar perfil/i });
   }
 
-  test("carrega e mostra o formulário", async () => {
+  test("carrega e mostra o formulário básico", async () => {
     await renderOpen();
 
     expect(screen.getByText("Nome")).toBeInTheDocument();
-    expect(screen.getByText("Email")).toBeInTheDocument();
     expect(screen.getByText("CPF/CNPJ")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /editar senha/i })
     ).toBeInTheDocument();
   });
 
-  test("salva e-mail com senha atual e reloga", async () => {
+  test("edita Nome e salva", async () => {
     await renderOpen();
 
-    const emailItem = getItemContainerByLabelText(/^Email$/);
-
-    const [editBtn] = within(emailItem).getAllByRole("button");
+    const nomeItem = getItemContainerByLabelText(/^Nome$/);
+    const [editBtn] = within(nomeItem).getAllByRole("button");
     await userEvent.click(editBtn);
 
-    const emailInput = within(emailItem).getByRole(
-      "textbox"
-    ) as HTMLInputElement;
-    await userEvent.clear(emailInput);
-    await userEvent.type(emailInput, "new@x.com");
+    const nomeInput = within(nomeItem).getByRole("textbox") as HTMLInputElement;
+    await userEvent.clear(nomeInput);
+    await userEvent.type(nomeInput, "Novo Nome");
 
-    await userEvent.type(screen.getByLabelText("Senha Atual"), "pass123");
-
-    const [saveBtn] = within(emailItem).getAllByRole("button");
+    const [saveBtn] = within(nomeItem).getAllByRole("button");
     await userEvent.click(saveBtn);
 
     await waitFor(() =>
-      expect(mockUpdate).toHaveBeenCalledWith("u1", {
-        email: "new@x.com",
-        currentPassword: "pass123",
-      })
+      expect(mockUpdate).toHaveBeenCalledWith("u1", { name: "Novo Nome" })
     );
-    await waitFor(() =>
-      expect(mockLogin).toHaveBeenCalledWith({
-        email: "new@x.com",
-        password: "pass123",
-      })
-    );
-  });
-
-  test("não salva e-mail sem senha atual", async () => {
-    await renderOpen();
-
-    const emailItem = getItemContainerByLabelText(/^Email$/);
-    const [editBtn] = within(emailItem).getAllByRole("button");
-    await userEvent.click(editBtn);
-
-    const emailInput = within(emailItem).getByRole(
-      "textbox"
-    ) as HTMLInputElement;
-    await userEvent.clear(emailInput);
-    await userEvent.type(emailInput, "other@x.com");
-
-    const [saveBtn] = within(emailItem).getAllByRole("button");
-    await userEvent.click(saveBtn);
-
-    const { message } = jest.requireMock("antd");
-    await waitFor(() =>
-      expect(message.warning).toHaveBeenCalledWith(
-        "Informe sua senha atual para alterar o e-mail."
-      )
-    );
-    expect(mockUpdate).not.toHaveBeenCalled();
   });
 
   test("edita CPF/CNPJ e salva", async () => {
     await renderOpen();
 
     const cpfItem = getItemContainerByLabelText("CPF/CNPJ");
-    const buttonsBefore = within(cpfItem).getAllByRole("button");
-    const editBtn = buttonsBefore[0];
+    const [editBtn] = within(cpfItem).getAllByRole("button");
     await userEvent.click(editBtn);
 
     const cpfInput = within(cpfItem).getByRole("textbox") as HTMLInputElement;
@@ -157,7 +127,9 @@ describe("CustomerEditProfileModal", () => {
     await userEvent.click(saveBtn);
 
     await waitFor(() =>
-      expect(mockUpdate).toHaveBeenCalledWith("u1", { cpfCnpj: "99999999999" })
+      expect(mockUpdate).toHaveBeenCalledWith("u1", {
+        cpfCnpj: "99999999999",
+      })
     );
   });
 });

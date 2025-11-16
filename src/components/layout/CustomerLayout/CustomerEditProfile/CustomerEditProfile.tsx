@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  Form,
-  Input,
-  message,
-  Typography,
-  Button,
-  Space,
-} from "antd";
-import {
-  EditOutlined,
-  CheckOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
-import {
-  getCurrentUser,
-  updateUser,
-  loginUser,
-} from "../../../../api/user/UserService";
+import { Modal, Form, Input, Typography, Button, Space } from "antd";
+import { EditOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import InputMask from "react-input-mask";
+import { getCurrentUser, updateUser } from "../../../../api/user/UserService";
+import { notifyError, notifySuccess } from "../../../../utils/notifications";
+import { UserResponse } from "../../../../api/user/type/UserResponse";
 
 interface Props {
   open: boolean;
@@ -36,64 +23,75 @@ const CustomerEditProfileModal: React.FC<Props> = ({
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editingPassword, setEditingPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
+
+  const [nameValue, setNameValue] = useState("");
+  const [cpfCnpjValue, setCpfCnpjValue] = useState("");
+  const [cpfCnpjMask, setCpfCnpjMask] = useState("999.999.999-99");
+
+  useEffect(() => {
+    const onlyDigits = cpfCnpjValue.replaceAll(/\D/g, "");
+    setCpfCnpjMask(
+      onlyDigits.length > 11 ? "99.999.999/9999-99" : "999.999.999-99"
+    );
+  }, [cpfCnpjValue]);
 
   useEffect(() => {
     if (open) {
-      getCurrentUser()
-        .then((data: any) => {
-          form.setFieldsValue({
-            name: data.name,
-            email: data.email,
-            cpfCnpj: data.cpfCnpj,
-          });
-          setEditingField(null);
-          setEditingPassword(false);
-        })
-        .catch(() => message.error("Erro ao carregar dados do usuário"));
+      getCurrentUser().then((data: UserResponse) => {
+        setCurrentUser(data);
+
+        const anyData = data as any;
+        const nameFromApi =
+          anyData.name ?? anyData.fullName ?? anyData.nome ?? "";
+
+        setNameValue(nameFromApi);
+        setCpfCnpjValue(data.cpfCnpj || "");
+
+        form.setFieldsValue({
+          name: nameFromApi,
+          cpfCnpj: data.cpfCnpj || "",
+        });
+      });
+    } else {
+      form.resetFields();
+      setEditingField(null);
+      setEditingPassword(false);
+      setCurrentUser(null);
+      setNameValue("");
+      setCpfCnpjValue("");
     }
-  }, [open, userId, form]);
+  }, [open, form]);
 
   const handleFieldSave = async (field: string) => {
     try {
+      await form.validateFields([field]);
       const value = form.getFieldValue(field);
-      const currentPassword = form.getFieldValue("currentPasswordForEmailUpdate");
 
-      if (field === "email" && !currentPassword) {
-        message.warning("Informe sua senha atual para alterar o e-mail.");
-        return;
-      }
+      const payload: any = {
+        [field]: field === "cpfCnpj" ? value.replace(/\D/g, "") : value,
+      };
 
-      await updateUser(userId, {
-        [field]: value,
-        ...(field === "email" ? { currentPassword } : {}),
-      });
+      await updateUser(userId, payload);
 
       if (field === "name") {
-        const storage = localStorage.getItem("name") ? localStorage : sessionStorage;
+        const storage = localStorage.getItem("name")
+          ? localStorage
+          : sessionStorage;
         storage.setItem("name", value);
+        notifySuccess("Nome atualizado com sucesso");
       }
 
-      if (field === "email") {
-        const response = await loginUser({
-          email: value,
-          password: currentPassword,
-        });
-
-        const storage = localStorage.getItem("token") ? localStorage : sessionStorage;
-        storage.setItem("token", response.token);
-        storage.setItem("role", response.role);
-        storage.setItem("name", response.name);
-        storage.setItem("userId", userId);
-
-        message.success("Email atualizado e login renovado com sucesso.");
-      } else {
-        message.success("Campo atualizado com sucesso");
+      if (field === "cpfCnpj") {
+        notifySuccess("Cpf/Cnpj atualizado com sucesso");
       }
 
       setEditingField(null);
       onSuccess?.();
     } catch (err: any) {
-      message.error(err?.response?.data?.message || "Erro ao atualizar campo");
+      const errorMessage =
+        err.response?.data?.message || "Ocorreu um erro inesperado.";
+      notifyError(errorMessage);
     }
   };
 
@@ -106,7 +104,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
       ]);
 
       if (values.newPassword !== values.confirmNewPassword) {
-        message.warning("As novas senhas não coincidem");
+        notifyError("As novas senhas não coincidem");
         return;
       }
 
@@ -116,17 +114,42 @@ const CustomerEditProfileModal: React.FC<Props> = ({
         currentPassword: values.currentPassword,
       });
 
-      message.success("Senha atualizada com sucesso");
+      notifySuccess("Senha atualizada com sucesso");
       setEditingPassword(false);
       form.resetFields([
         "currentPassword",
         "newPassword",
         "confirmNewPassword",
       ]);
-    } catch {
-      message.error("Erro ao atualizar senha");
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || "Erro ao atualizar senha";
+      notifyError(errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelEdit = (field: string) => {
+    setEditingField(null);
+    if (!currentUser) return;
+
+    const anyUser = currentUser as any;
+    const nameFromApi =
+      anyUser.name ?? anyUser.fullName ?? anyUser.nome ?? "";
+
+    if (field === "name") {
+      setNameValue(nameFromApi);
+      form.setFieldsValue({
+        name: nameFromApi,
+      });
+    }
+
+    if (field === "cpfCnpj") {
+      setCpfCnpjValue(currentUser.cpfCnpj || "");
+      form.setFieldsValue({
+        cpfCnpj: currentUser.cpfCnpj || "",
+      });
     }
   };
 
@@ -141,7 +164,15 @@ const CustomerEditProfileModal: React.FC<Props> = ({
       <Form layout="vertical" form={form}>
         <Form.Item name="name" label="Nome" rules={[{ required: true }]}>
           <Space.Compact style={{ width: "100%" }}>
-            <Input disabled={editingField !== "name"} />
+            <Input
+              disabled={editingField !== "name"}
+              value={nameValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setNameValue(value);
+                form.setFieldsValue({ name: value });
+              }}
+            />
             {editingField === "name" ? (
               <>
                 <Button
@@ -150,7 +181,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
                 />
                 <Button
                   icon={<CloseOutlined />}
-                  onClick={() => setEditingField(null)}
+                  onClick={() => handleCancelEdit("name")}
                 />
               </>
             ) : (
@@ -162,50 +193,29 @@ const CustomerEditProfileModal: React.FC<Props> = ({
           </Space.Compact>
         </Form.Item>
 
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[{ required: true, type: "email" }]}
-        >
+        <Form.Item name="cpfCnpj" label="CPF/CNPJ" rules={[{ required: true }]}>
           <Space.Compact style={{ width: "100%" }}>
-            <Input disabled={editingField !== "email"} />
-            {editingField === "email" ? (
-              <>
-                <Button
-                  icon={<CheckOutlined />}
-                  onClick={() => handleFieldSave("email")}
+            <InputMask
+              mask={cpfCnpjMask}
+              value={cpfCnpjValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCpfCnpjValue(value);
+                form.setFieldsValue({ cpfCnpj: value });
+              }}
+              disabled={editingField !== "cpfCnpj"}
+            >
+              {(inputProps: any) => (
+                <Input
+                  {...inputProps}
+                  className={
+                    editingField !== "cpfCnpj"
+                      ? `${inputProps.className || ""} ant-input-disabled`
+                      : inputProps.className
+                  }
                 />
-                <Button
-                  icon={<CloseOutlined />}
-                  onClick={() => setEditingField(null)}
-                />
-              </>
-            ) : (
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setEditingField("email")}
-              />
-            )}
-          </Space.Compact>
-        </Form.Item>
-
-        {editingField === "email" && (
-          <Form.Item
-            name="currentPasswordForEmailUpdate"
-            label="Senha Atual"
-            rules={[{ required: true, message: "Informe sua senha atual" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-        )}
-
-        <Form.Item
-          name="cpfCnpj"
-          label="CPF/CNPJ"
-          rules={[{ required: true }]}
-        >
-          <Space.Compact style={{ width: "100%" }}>
-            <Input disabled={editingField !== "cpfCnpj"} />
+              )}
+            </InputMask>
             {editingField === "cpfCnpj" ? (
               <>
                 <Button
@@ -214,7 +224,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
                 />
                 <Button
                   icon={<CloseOutlined />}
-                  onClick={() => setEditingField(null)}
+                  onClick={() => handleCancelEdit("cpfCnpj")}
                 />
               </>
             ) : (
@@ -269,9 +279,7 @@ const CustomerEditProfileModal: React.FC<Props> = ({
                     if (!value || getFieldValue("newPassword") === value) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(
-                      new Error("As senhas não coincidem")
-                    );
+                    return Promise.reject(new Error("As senhas não coincidem"));
                   },
                 }),
               ]}

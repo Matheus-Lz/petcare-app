@@ -42,7 +42,7 @@ const Auth: React.FC = () => {
       storage.setItem("name", name);
       storage.setItem("userId", userId);
 
-      notifySuccess("Bem vindo!");
+      notifySuccess("Bem vindo");
 
       switch (role) {
         case "SUPER_ADMIN":
@@ -69,7 +69,7 @@ const Auth: React.FC = () => {
     try {
       const payload = {
         ...values,
-        cpfCnpj: values.cpfCnpj.replace(/\D/g, ""),
+        cpfCnpj: values.cpfCnpj.replaceAll(/\D/g, ""),
       };
 
       await registerUser(payload);
