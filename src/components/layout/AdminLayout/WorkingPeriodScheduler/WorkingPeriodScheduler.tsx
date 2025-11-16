@@ -166,6 +166,7 @@ const WorkingPeriodScheduler: React.FC = () => {
                       danger
                       icon={<DeleteOutlined />}
                       onClick={() => handleDeletePeriod(period.id)}
+                      aria-label={`delete-${period.id}`}
                     />
                   </div>
                 ))

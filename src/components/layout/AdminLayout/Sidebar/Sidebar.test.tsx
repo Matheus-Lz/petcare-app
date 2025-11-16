@@ -72,6 +72,21 @@ describe("Sidebar", () => {
     expect(screen.queryByText("Funcionários")).not.toBeInTheDocument();
   });
 
+  test("quando não há role salva, mostra apenas Perfil e Sair", () => {
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("Perfil")).toBeInTheDocument();
+    expect(screen.getByText("Sair")).toBeInTheDocument();
+    expect(screen.queryByText("Gerenciar serviços")).not.toBeInTheDocument();
+    expect(screen.queryByText("Serviços")).not.toBeInTheDocument();
+    expect(screen.queryByText("Períodos")).not.toBeInTheDocument();
+    expect(screen.queryByText("Funcionários")).not.toBeInTheDocument();
+  });
+
   test("abre e fecha modal de edição de perfil", async () => {
     renderWithRole("USER", "user-xyz");
 
@@ -83,15 +98,14 @@ describe("Sidebar", () => {
   });
 
   test("logout limpa storages e navega para /auth", async () => {
-    const spyLocal = jest.spyOn(Object.getPrototypeOf(window.localStorage), "clear");
-    const spySession = jest.spyOn(Object.getPrototypeOf(window.sessionStorage), "clear");
-
-    renderWithRole("USER");
+    renderWithRole("USER", "user-xyz");
 
     await userEvent.click(screen.getByText("Sair"));
 
-    expect(spyLocal).toHaveBeenCalled();
-    expect(spySession).toHaveBeenCalled();
+    expect(sessionStorage.getItem("role")).toBeNull();
+    expect(sessionStorage.getItem("userId")).toBeNull();
+    expect(localStorage.getItem("role")).toBeNull();
+    expect(localStorage.getItem("userId")).toBeNull();
     expect(mockNavigate).toHaveBeenCalledWith("/auth");
   });
 });

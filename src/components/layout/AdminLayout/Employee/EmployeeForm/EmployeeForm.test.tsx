@@ -16,6 +16,15 @@ jest.mock("../../../../../api/Employee/Employee", () => ({
   updateEmployee: (...a: any[]) => mockUpdateEmployee(...a),
 }));
 
+jest.mock("react-input-mask", () => {
+  return ({ children, ...rest }: any) => {
+    if (typeof children === "function") {
+      return children(rest);
+    }
+    return <input {...rest} />;
+  };
+});
+
 jest.mock("antd", () => {
   const real = jest.requireActual("antd");
 

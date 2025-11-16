@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Spin } from "antd";
+import InputMask from "react-input-mask";
 import {
   createEmployee,
   updateEmployee,
@@ -30,6 +31,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
     { id: string; name: string }[]
   >([]);
   const [loadingServices, setLoadingServices] = useState(false);
+  const [cpfCnpjValue, setCpfCnpjValue] = useState("");
+  const [cpfCnpjMask, setCpfCnpjMask] = useState("999.999.999-99");
+
+  useEffect(() => {
+    const onlyDigits = cpfCnpjValue.replace(/\D/g, "");
+    setCpfCnpjMask(
+      onlyDigits.length > 11 ? "99.999.999/9999-99" : "999.999.999-99"
+    );
+  }, [cpfCnpjValue]);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -55,25 +65,26 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
         password: "",
         serviceIds: employee.petServiceList.map((s) => s.id),
       });
+      setCpfCnpjValue(employee.user?.cpfCnpj || "");
     } else {
       form.resetFields();
+      setCpfCnpjValue("");
     }
   }, [employee, form]);
 
   const handleFinish = async (values: any) => {
-    const payload: CreateEmployeeRequest = {
-      user: {
-        email: values.email,
-        name: values.name,
-        cpfCnpj: values.cpfCnpj,
-        password: values.password,
-      },
-      serviceIds: values.serviceIds,
-    };
-
     if (employee) {
       await updateEmployee(employee.id, { serviceIds: values.serviceIds });
     } else {
+      const payload: CreateEmployeeRequest = {
+        user: {
+          email: values.email,
+          name: values.name,
+          cpfCnpj: values.cpfCnpj.replace(/\D/g, ""),
+          password: values.password,
+        },
+        serviceIds: values.serviceIds,
+      };
       await createEmployee(payload);
     }
 
@@ -123,10 +134,19 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
               name="cpfCnpj"
               rules={[
                 { required: true, message: "CPF/CNPJ é obrigatório" },
-                { max: 14, message: "Máximo 14 caracteres" },
               ]}
             >
-              <Input disabled={readOnly} />
+              <InputMask
+                mask={cpfCnpjMask}
+                value={cpfCnpjValue}
+                onChange={(e) => {
+                  setCpfCnpjValue(e.target.value);
+                  form.setFieldsValue({ cpfCnpj: e.target.value });
+                }}
+                disabled={readOnly}
+              >
+                {(inputProps: any) => <Input {...inputProps} />}
+              </InputMask>
             </Form.Item>
             <Form.Item
               label="Nome"
