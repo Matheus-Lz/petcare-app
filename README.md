@@ -1,46 +1,66 @@
-# Getting Started with Create React App
+# Petshop App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Sobre o Projeto
+Interface web do sistema de gestão para Petshops. Desenvolvida como uma Single Page Application (SPA), a plataforma oferece duas experiências distintas: um painel administrativo para gestão do negócio (serviços, funcionários e agenda) e uma área do cliente intuitiva para agendamento de serviços.
 
-## Available Scripts
+## Objetivo
+- **Interface Intuitiva:** Facilitar a navegação de usuários durante o processo de agendamento.
+- **Gestão Visual:** Oferecer aos administradores e funcionários dashboards claros para o gerenciamento do petshop.
 
-In the project directory, you can run:
+## Boas práticas de desenvolvimento aplicadas
+- **Componentização:** Utilização de componentes Angular reutilizáveis para padronização visual.
+- **Guards de Rotas:** Proteção de rotas administrativas para garantir acesso apenas a usuários autorizados.
+- **Interceptors:** Injeção automática do Token JWT em requisições HTTP e tratamento das respostas da api.
+- **Tipagem Estática:** Uso de TypeScript para garantir segurança e reduzir erros de desenvolvimento.
 
-### `npm start`
+Esse é o FRONT-END do projeto. A API está disponível no repositório: [BACK-END](https://github.com/Matheus-Lz/petcare-api)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Arquitetura e Modelagem
+- [Diagrama de Casos de Uso]()
+- [Diagrama C4]()
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Requisitos Funcionais
+| Identificação | Requisito Funcional | Descrição |
+|---------------|---------------------|-----------|
+| **RF001** | **Cadastro de Usuários** | O sistema deve permitir o cadastro de novos usuários (clientes e funcionários). |
+| **RF002** | **Autenticação** | O sistema deve permitir a autenticação de usuários por login e senha. |
+| **RF003** | **Geração de Token** | O sistema deve gerar um token de acesso (JWT) após o login bem-sucedido. |
+| **RF004** | **Recuperação de Senha** | O sistema deve oferecer funcionalidade de "esqueci minha senha" para redefinição segura. |
+| **RF005** | **Atualização de Perfil** | O sistema deve permitir que usuários atualizem suas informações de perfil. |
+| **RF006** | **Gestão de Funcionários** | O sistema deve permitir o cadastro, atualização e remoção de funcionários por um administrador. |
+| **RF007** | **Definição de Funções** | O sistema deve permitir a definição de funções ou especialidades para os funcionários. |
+| **RF008** | **Consulta de Funcionários** | O sistema deve permitir a consulta da lista de funcionários e seus detalhes. |
+| **RF009** | **Gestão de Serviços** | O sistema deve permitir o gerenciamento (CRUD) de serviços (ex: banho, tosa). |
+| **RF010** | **Detalhamento de Serviço** | Cada serviço deve possuir nome, descrição, duração estimada e preço. |
+| **RF011** | **Agendamento** | O sistema deve permitir que o cliente agende um serviço com um horário disponível. |
+| **RF012** | **Validação de Conflitos** | O sistema deve validar conflitos de horário para impedir agendamentos duplicados. |
+| **RF013** | **Cancelamento** | O sistema deve permitir o cancelamento de agendamentos conforme regras de negócio. |
+| **RF014** | **Visualização de Agenda** | O sistema deve permitir a visualização da agenda por dia. |
 
-### `npm test`
+## Requisitos Não Funcionais
+| Identificação | Requisito Não Funcional | Descrição |
+|---------------|-------------------------|-----------|
+| **RNF001** | **Criptografia** | As senhas devem ser armazenadas com criptografia. |
+| **RNF002** | **Proteção de Rotas** | O acesso a rotas protegidas deve exigir token JWT válido. |
+| **RNF003** | **Controle de Acesso (RBAC)** | Implementação de controle de acesso baseado em papéis (Cliente/Admin). |
+| **RNF004** | **Documentação API** | Documentação automática da API via Swagger/OpenAPI. |
+| **RNF005** | **Testes** | Cobertura de testes unitários e de integração (JUnit). |
+| **RNF006** | **Padronização de Erros** | Respostas de erro da API devem ser padronizadas e claras. |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Pipelines
 
-### `npm run build`
+A pipeline de CI/CD garante o deploy automático na Vercel:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. **Análise de Qualidade**
+- Instalação de dependências (`npm install`).
+- Execução de testes unitários e análise via **SonarQube**.
+- Validação de coverage da aplicação.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. **Deploy (Vercel)**
+- Deploy automático ao realizar push na branch principal.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Tecnologias Utilizadas
+- **Framework:** Angular
+- **Linguagem:** TypeScript
+- **Estilização:** CSS/SCSS
+- **Deploy:** Vercel
