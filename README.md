@@ -16,8 +16,8 @@ Interface web do sistema de gestão para Petshops. Desenvolvida como uma Single 
 Esse é o FRONT-END do projeto. A API está disponível no repositório: [BACK-END](https://github.com/Matheus-Lz/petcare-api)
 
 ## Arquitetura e Modelagem
-- [Diagrama de Casos de Uso]()
-- [Diagrama C4]()
+- [Diagrama de Casos de Uso](https://drive.google.com/file/d/1Lq8BeclUo1xrL-n_wvQchlxaWc-rvV9V/view?usp=sharing)
+- [Diagrama C4](https://drive.google.com/file/d/1AHJ6pjDekqD5QMF4iRPuELfvp4u9r9g8/view?usp=sharing)
 
 ## Requisitos Funcionais
 | Identificação | Requisito Funcional | Descrição |
